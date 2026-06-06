@@ -1,12 +1,12 @@
 {
   "schema_version": 3,
-  "scraped_at": "2026-06-06T20:01:39.337165+00:00",
-  "count": 31,
+  "scraped_at": "2026-06-06T20:38:41.822815+00:00",
+  "count": 33,
   "sources": [
     {
       "id": "CaribbeanJobs",
       "url": "https://www.caribbeanjobs.com/ShowResults.aspx?Keywords=&Page=1&PerPage=25&SortBy=Most+Recent",
-      "count": 24,
+      "count": 25,
       "status": "ok",
       "error": null
     },
@@ -18,31 +18,59 @@
       "error": null
     },
     {
-      "id": "Youth Programs",
-      "url": "mock://summer-programs",
-      "count": 3,
+      "id": "Youth & Summer Programs Hub",
+      "url": "https://www.ntrc.vc/general/ntrc-news/",
+      "count": 4,
       "status": "ok",
       "error": null
     }
   ],
   "summary": {
     "by_category": {
-      "Other": 10,
+      "Other": 8,
+      "Tech": 1,
       "Admin": 13,
       "Retail": 7,
-      "Tech": 1
+      "Technology & Youth Development": 4
     },
     "by_source": {
-      "CaribbeanJobs": 24,
+      "CaribbeanJobs": 25,
       "SVG Gov": 4,
-      "Youth Programs": 3
+      "NTRC SVG": 4
     },
     "by_listing_type": {
-      "Job": 28,
-      "Summer Program": 3
+      "Job": 29,
+      "Summer Program": 4
     }
   },
   "jobs": [
+    {
+      "title": "Financial Advisor - Ocho Rios (Commission-Based)",
+      "company": "Sagicor Group Jamaica Ltd.",
+      "url": "https://www.caribbeanjobs.com/Financial-Advisor-Ocho-Rios-Commission-Job-233141.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233141"
+    },
+    {
+      "title": "Data Entry Assistant (Contract)",
+      "company": "Sagicor Group Jamaica Ltd.",
+      "url": "https://www.caribbeanjobs.com/Data-Entry-Assistant-Contract-Job-233140.aspx",
+      "category": "Tech",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233140"
+    },
+    {
+      "title": "Assistant Manager - Asset Management (Off- Balance Sheet)",
+      "company": "Sagicor Group Jamaica Ltd.",
+      "url": "https://www.caribbeanjobs.com/Assistant-Manager-Asset-Management-Off-Job-233139.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233139"
+    },
     {
       "title": "Bartender",
       "company": "Usain Bolt’s Tracks & Records (KLE Group)",
@@ -242,24 +270,6 @@
       "external_id": "caribbeanjobs:233123"
     },
     {
-      "title": "Internal Audit Manager - I.T. & Data Analytics",
-      "company": "Supreme Ventures Group",
-      "url": "https://www.caribbeanjobs.com/Internal-Audit-Manager-I-T-Job-233125.aspx",
-      "category": "Tech",
-      "source": "CaribbeanJobs",
-      "listing_type": "Job",
-      "external_id": "caribbeanjobs:233125"
-    },
-    {
-      "title": "ASSISTANT FOOD AND BEVERAGE MANAGER",
-      "company": "Princess Hotels & Resorts",
-      "url": "https://www.caribbeanjobs.com/ASSISTANT-FOOD-AND-BEVERAGE-MANAGER-Job-233124.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "listing_type": "Job",
-      "external_id": "caribbeanjobs:233124"
-    },
-    {
       "title": "Chief Immigration Officer",
       "company": "SVG Public Service Commission",
       "url": "https://psc.gov.vc/psc/images/PDF/Vacancies/Chief_Immigration_Officer.pdf",
@@ -296,31 +306,48 @@
       "external_id": "svggov:advertisement_-_post_of_urban_planner"
     },
     {
-      "title": "SVG Ministry of Tourism Kids Camp",
-      "company": "SVG Ministry of Tourism",
-      "url": "https://www.gov.vc/youth/kids-camp",
-      "category": "Other",
-      "source": "Youth Programs",
+      "external_id": "87daaa91-1cb5-5ad0-973b-4db37994ad26",
+      "title": "NTRC’s 2025 icode784 Competition WINNERSOctober 22, 2025Photo displays the winners               NTRC’s 2025 icode784 Competition Winners   KINGSTOWN, ST. VINCENT AND THE GRENADINES – TheRead More »",
+      "company": "NTRC St. Vincent",
+      "location": "Kingstown, St. Vincent",
+      "category": "Technology & Youth Development",
+      "source": "NTRC SVG",
       "listing_type": "Summer Program",
-      "external_id": "summer-programs:svg-ministry-of-tourism-kids-camp"
+      "url": "https://www.ntrc.vc/ntrcs-2025-icode784-competition-winners/",
+      "scraped_at": "2026-06-06T20:38:46.126586+00:00"
     },
     {
-      "title": "NTRC Caribbean Coding Workshop",
-      "company": "NTRC",
-      "url": "https://www.ntrc.gov.vc/coding-workshop",
-      "category": "Other",
-      "source": "Youth Programs",
+      "external_id": "ecbad6e2-59e5-5df0-8a64-e134a48cdb9d",
+      "title": "NTRC’s 2025 icode784 Competition FinalistsOctober 8, 2025Photo displays one of the apps presented at the preliminary               NTRC’s 2025 icode784 Competition Finalists   KINGSTOWN, ST.Read More »",
+      "company": "NTRC St. Vincent",
+      "location": "Kingstown, St. Vincent",
+      "category": "Technology & Youth Development",
+      "source": "NTRC SVG",
       "listing_type": "Summer Program",
-      "external_id": "summer-programs:ntrc-caribbean-coding-workshop"
+      "url": "https://www.ntrc.vc/ntrcs-2025-icode784-competition-finalists/",
+      "scraped_at": "2026-06-06T20:38:46.126586+00:00"
     },
     {
-      "title": "SVG Coast Guard Youth Program",
-      "company": "SVG Coast Guard",
-      "url": "https://www.coastguard.gov.vc/youth-program",
-      "category": "Other",
-      "source": "Youth Programs",
+      "external_id": "e0800225-700b-5055-857a-4335daf8df02",
+      "title": "78 Apps registered to enter the Preliminary Round Judging for the NTRC’s 2025 iCode784 CompetitionSeptember 17, 202578 Apps registered to enter the Preliminary Round Judging for the NTRC’s 2025 iCode784 Competition   KINGSTOWN, ST. VINCENT AND THE GRENADINES – TheRead More »",
+      "company": "NTRC St. Vincent",
+      "location": "Kingstown, St. Vincent",
+      "category": "Technology & Youth Development",
+      "source": "NTRC SVG",
       "listing_type": "Summer Program",
-      "external_id": "summer-programs:svg-coast-guard-youth-program"
+      "url": "https://www.ntrc.vc/78-apps-registered-to-enter-the-preliminary-round-judging-for-the-ntrcs-2025-icode784-competition/",
+      "scraped_at": "2026-06-06T20:38:46.126586+00:00"
+    },
+    {
+      "external_id": "3968f53d-446a-5f8e-b845-e48adca03f70",
+      "title": "2025 iCode784 Competition Robotics Category Zone 2 Preliminary JudgingAugust 19, 2025Robotics Teams Compete in Second Round of Judging for the 2025 iCode784 Competition   KINGSTOWN, ST. VINCENT AND THE GRENADINES – The National TelecommunicationsRead More »",
+      "company": "NTRC St. Vincent",
+      "location": "Kingstown, St. Vincent",
+      "category": "Technology & Youth Development",
+      "source": "NTRC SVG",
+      "listing_type": "Summer Program",
+      "url": "https://www.ntrc.vc/2025-icode784-competition-robotics-category-zone-2-preliminary-judging/",
+      "scraped_at": "2026-06-06T20:38:46.126586+00:00"
     }
   ]
 }
