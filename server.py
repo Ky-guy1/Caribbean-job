@@ -1,3 +1,4 @@
+import hmac
 import os
 
 """
@@ -6,6 +7,12 @@ Local web server: job board UI + subscription API.
 Run:
   python server.py
   Open http://localhost:8000
+
+Scheduled scraping (cloud cron):
+  Set SCRAPER_WEBHOOK_TOKEN in the environment, then call:
+    POST /api/trigger-scrape
+    Authorization: Bearer <SCRAPER_WEBHOOK_TOKEN>
+  (GET is also accepted; X-Webhook-Token header or ?token= query param work too.)
 """
 
 from pathlib import Path
@@ -13,7 +20,8 @@ from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
 
 import database as db
-
+import notifier
+import scraper
 PROJECT_DIR = Path(__file__).resolve().parent
 app = Flask(__name__, static_folder=str(PROJECT_DIR), static_url_path="")
 
@@ -68,6 +76,73 @@ def api_subscribe():
 def health():
     return jsonify({"ok": True, "subscriptions": db.subscription_count()})
 
+
+WEBHOOK_TOKEN = os.environ.get("SCRAPER_WEBHOOK_TOKEN", "").strip()
+
+
+def _extract_webhook_token() -> str:
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        return auth[7:].strip()
+    header_token = request.headers.get("X-Webhook-Token", "").strip()
+    if header_token:
+        return header_token
+    return request.args.get("token", "").strip()
+
+
+def _webhook_authorized() -> bool:
+    if not WEBHOOK_TOKEN:
+        return False
+    provided = _extract_webhook_token()
+    if not provided:
+        return False
+    return hmac.compare_digest(provided, WEBHOOK_TOKEN)
+
+
+def _run_main(step: str, fn) -> tuple[bool, str | None]:
+    try:
+        fn()
+    except SystemExit as exc:
+        if exc.code not in (None, 0):
+            return False, f"{step} failed (exit code {exc.code})"
+    return True, None
+
+
+@app.route("/api/trigger-scrape", methods=["GET", "POST"])
+def trigger_scrape():
+    if not WEBHOOK_TOKEN:
+        return (
+            jsonify(
+                {
+                    "ok": False,
+                    "error": "SCRAPER_WEBHOOK_TOKEN is not configured on the server.",
+                }
+            ),
+            503,
+        )
+    if not _webhook_authorized():
+        return jsonify({"ok": False, "error": "Invalid or missing API token."}), 401
+
+    scrape_ok, scrape_error = _run_main("scrape", scraper.main)
+    if not scrape_ok:
+        return jsonify({"ok": False, "step": "scrape", "error": scrape_error}), 500
+
+    notify_ok, notify_error = _run_main("notify", notifier.main)
+    if not notify_ok:
+        return (
+            jsonify({"ok": False, "step": "notify", "error": notify_error}),
+            500,
+        )
+
+    jobs = db.list_jobs()
+    return jsonify(
+        {
+            "ok": True,
+            "jobs_count": len(jobs),
+            "scraped_at": jobs[0]["scraped_at"] if jobs else None,
+            "subscriptions": db.subscription_count(),
+        }
+    )
 
 
 if __name__ == "__main__":
