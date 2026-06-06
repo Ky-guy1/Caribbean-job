@@ -1,3 +1,5 @@
+import os
+
 """
 Local web server: job board UI + subscription API.
 
@@ -67,9 +69,8 @@ def health():
     return jsonify({"ok": True, "subscriptions": db.subscription_count()})
 
 
-import os
 
 if __name__ == "__main__":
-    # Read the dynamic port assigned by Render, fallback to 8000 if running locally
     port = int(os.environ.get("PORT", 8000))
     app.run(host="0.0.0.0", port=port)
+
