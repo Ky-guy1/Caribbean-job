@@ -67,8 +67,9 @@ def health():
     return jsonify({"ok": True, "subscriptions": db.subscription_count()})
 
 
+import os
+
 if __name__ == "__main__":
-    db.init_db()
-    print("Caribbean Finder running at http://localhost:8000")
-    print("Press Ctrl+C to stop.")
-    app.run(host="127.0.0.1", port=8000, debug=False)
+    # Read the dynamic port assigned by Render, fallback to 8000 if running locally
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port)
