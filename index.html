@@ -247,6 +247,7 @@
   </template>
 
   <script>
+    // 1. Element Selectors
     const listEl = document.getElementById('job-list');
     const loadingEl = document.getElementById('loading');
     const errorEl = document.getElementById('error');
@@ -256,19 +257,16 @@
     const clearBtn = document.getElementById('clear-search');
     const template = document.getElementById('job-card-template');
     const alertsSection = document.getElementById('alerts-section');
-    const subscribeForm = document.getElementById('subscribe-form');
-    const subscribeMessage = document.getElementById('subscribe-message');
     const listingTabs = document.getElementById('listing-tabs');
     const themeToggleBtn = document.getElementById('theme-toggle');
     const darkIcon = document.getElementById('theme-toggle-dark-icon');
     const lightIcon = document.getElementById('theme-toggle-light-icon');
 
+    // 2. Global State Tracking
     let allJobs = [];
     let activeListingFilter = 'all';
 
-    const CATEGORY_STYLES = { Tech: 'bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/30', Admin: 'bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/30', Retail: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30', Other: 'bg-slate-500/15 text-slate-400 ring-1 ring-slate-500/30' };
-    const SOURCE_STYLES = { CaribbeanJobs: 'bg-amber-500/15 text-amber-200 ring-1 ring-amber-500/30', 'SVG Gov': 'bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500/30', 'NTRC SVG': 'bg-sky-500/15 text-sky-200 ring-1 ring-sky-500/30' };
-
+    // 3. Theme Toggle Setup
     if (localStorage.getItem('color-theme') === 'light' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
       document.documentElement.classList.add('light'); document.documentElement.classList.remove('dark');
       if (lightIcon) lightIcon.classList.remove('hidden');
@@ -287,46 +285,126 @@
       });
     }
 
+    // 4. Helper Functions
     function companyInitials(name) {
       if (!name) return '?';
       const words = name.trim().split(/\s+/).filter(Boolean);
       if (!words.length) return '?';
       if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
-      return (words[0][0] + words[1][0]).toUpperCase();
+      return (words[0][0] + (words[1] ? words[1][0] : '')).toUpperCase();
     }
 
+    function listingTypeOf(job) {
+      return job.listing_type || 'Job';
+    }
+
+    function applyListingFilter(jobs) {
+      if (activeListingFilter === 'jobs') {
+        return jobs.filter((j) => listingTypeOf(j) === 'Job');
+      }
+      if (activeListingFilter === 'summer') {
+        return jobs.filter((j) => listingTypeOf(j) === 'Summer Program');
+      }
+      return jobs;
+    }
+
+    // 5. Core Render Engine
     function renderJobs(jobs) {
       if (!listEl || !template) return;
       listEl.innerHTML = '';
       const fragment = document.createDocumentFragment();
+
       jobs.forEach((job) => {
         const node = template.content.cloneNode(true);
         node.querySelector('.job-title').textContent = job.title;
         node.querySelector('.job-company').textContent = job.company;
         node.querySelector('.job-avatar').textContent = companyInitials(job.company);
+        
         const a = node.querySelector('.job-card');
         if (a) a.href = job.url || '#';
+        
         fragment.appendChild(node);
       });
+
       listEl.appendChild(fragment);
       listEl.classList.toggle('hidden', jobs.length === 0);
       if (emptyEl) emptyEl.classList.toggle('hidden', jobs.length > 0);
       if (metaEl) metaEl.textContent = `${jobs.length} listings displayed`;
     }
 
+    // 6. Filtering & Event Handler Engine
+    function onSearchInput() {
+      const value = searchEl ? searchEl.value : '';
+      if (clearBtn) clearBtn.classList.toggle('hidden', !value);
+      
+      // Filter by the active tab first
+      const tabFilteredPool = applyListingFilter(allJobs);
+      
+      // Then filter by search text if a user is typing
+      const q = value.trim().toLowerCase();
+      if (!q) {
+        renderJobs(tabFilteredPool);
+      } else {
+        const fullyFiltered = tabFilteredPool.filter(
+          (j) =>
+            j.title.toLowerCase().includes(q) ||
+            j.company.toLowerCase().includes(q)
+        );
+        renderJobs(fullyFiltered);
+      }
+    }
+
+    function setActiveTab(filter) {
+      activeListingFilter = filter;
+      const TAB_ACTIVE = 'bg-cyan-500/20 text-cyan-200 ring-1 ring-cyan-500/40';
+      const TAB_INACTIVE = 'bg-white/[0.04] text-slate-400 ring-1 ring-white/10 hover:bg-white/[0.08] hover:text-slate-200';
+      
+      if (listingTabs) {
+        listingTabs.querySelectorAll('button').forEach((tab) => {
+          const isActive = tab.dataset.filter === filter;
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          tab.className = `listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition ${isActive ? TAB_ACTIVE : TAB_INACTIVE}`;
+        });
+      }
+    }
+
+    // 7. Event Listeners Connection
+    if (listingTabs) {
+      listingTabs.addEventListener('click', (e) => {
+        const tab = e.target.closest('button');
+        if (!tab) return;
+        setActiveTab(tab.dataset.filter);
+        onSearchInput();
+      });
+    }
+
+    if (searchEl) searchEl.addEventListener('input', onSearchInput);
+    
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (searchEl) {
+          searchEl.value = '';
+          onSearchInput();
+          searchEl.focus();
+        }
+      });
+    }
+
+    // 8. Initialization Data Loader
     async function loadJobs() {
       try {
         let res = await fetch('/api/jobs', { cache: 'no-store' });
         if (res.ok) return res.json();
         res = await fetch('jobs.json', { cache: 'no-store' });
         return res.json();
-      } catch (e) { return { jobs: [] }; }
+      } catch (e) { 
+        return { jobs: [] }; 
+      }
     }
 
     async function init() {
       const data = await loadJobs();
       
-      // Emergency structure handler for list format vs object format
       if (Array.isArray(data)) {
         allJobs = data;
       } else if (data && Array.isArray(data.jobs)) {
@@ -337,8 +415,11 @@
 
       if (loadingEl) loadingEl.classList.add('hidden');
       if (alertsSection) alertsSection.classList.remove('hidden');
-      renderJobs(allJobs);
+      
+      // Render initial setup
+      onSearchInput();
     }
+
     init();
   </script>
 </body>
