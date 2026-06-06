@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Caribbean Finder — Job Board</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ocean: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' },
+            coral: { 400: '#fb7185', 500: '#f43f5e' },
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            card: '0 4px 24px -4px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
+            glow: '0 0 40px -8px rgba(6,182,212,0.35)',
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    @supports (padding: max(0px)) {
+      body { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+      header { padding-top: max(0px, env(safe-area-inset-top)); }
+    }
+    .card-shine {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0a0f1a] font-sans text-slate-100 antialiased">
+  <!-- Ambient background -->
+  <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-rose-500/10 blur-3xl"></div>
+  </div>
+
+  <div class="relative mx-auto min-h-screen max-w-lg">
+    <!-- Sticky header + search -->
+    <header class="sticky top-0 z-30 border-b border-white/[0.06] bg-[#0a0f1a]/90 backdrop-blur-xl">
+      <div class="px-4 pb-4 pt-5 sm:px-5">
+        <div class="flex items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-rose-500 shadow-glow">
+            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-400/90">Caribbean Finder</p>
+            <h1 class="text-lg font-bold tracking-tight text-white">Discover your next role</h1>
+          </div>
+        </div>
+
+        <div class="relative mt-4">
+          <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            id="search"
+            type="search"
+            placeholder="Search title or company…"
+            autocomplete="off"
+            class="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-12 pr-10 text-[15px] text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50 focus:bg-white/[0.07] focus:ring-2 focus:ring-cyan-500/20"
+          />
+          <button
+            id="clear-search"
+            type="button"
+            class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-lg p-1 text-slate-500 hover:bg-white/10 hover:text-white"
+            aria-label="Clear search"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <p id="meta" class="mt-3 text-xs font-medium text-slate-500">Loading…</p>
+      </div>
+    </header>
+
+    <main class="px-4 pb-8 pt-2 sm:px-5">
+      <!-- WhatsApp alerts subscription -->
+      <section
+        id="alerts-section"
+        class="mb-5 hidden overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-white/[0.04] to-cyan-500/10 p-5 shadow-card"
+      >
+        <div class="flex items-start gap-3">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <h2 class="text-base font-bold text-white">Instant WhatsApp Job Alerts</h2>
+            <p class="mt-0.5 text-xs leading-relaxed text-slate-400">
+              Never miss a role. Get notified the moment new jobs match your category.
+            </p>
+          </div>
+        </div>
+
+        <form id="subscribe-form" class="mt-4 space-y-3" novalidate>
+          <div>
+            <label for="phone" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+              WhatsApp number
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputmode="tel"
+              autocomplete="tel"
+              placeholder="+1 876 555 1234"
+              required
+              class="w-full rounded-2xl border border-white/10 bg-[#0a0f1a]/60 px-4 py-3.5 text-[15px] text-white placeholder-slate-600 outline-none transition focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
+            />
+          </div>
+          <div>
+            <label for="category" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Job category
+            </label>
+            <div class="relative">
+              <select
+                id="category"
+                name="category"
+                required
+                class="w-full appearance-none rounded-2xl border border-white/10 bg-[#0a0f1a]/60 px-4 py-3.5 pr-10 text-[15px] text-white outline-none transition focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
+              >
+                <option value="" disabled selected>Select a category…</option>
+                <option value="Tech">Tech — IT, engineering, data</option>
+                <option value="Admin">Admin — office, HR, finance</option>
+                <option value="Retail">Retail — sales, customer service</option>
+              </select>
+              <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+          <button
+            type="submit"
+            id="subscribe-btn"
+            class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition hover:brightness-110 active:scale-[0.99] disabled:opacity-60"
+          >
+            <span id="subscribe-btn-label">Subscribe to alerts</span>
+            <svg id="subscribe-spinner" class="hidden h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </button>
+        </form>
+
+        <p id="subscribe-message" class="mt-3 hidden rounded-xl px-3 py-2 text-center text-sm font-medium" role="status"></p>
+      </section>
+
+      <div id="loading" class="flex flex-col items-center gap-4 py-24">
+        <div class="h-9 w-9 animate-spin rounded-full border-2 border-cyan-500/30 border-t-cyan-400"></div>
+        <p class="text-sm text-slate-500">Loading jobs…</p>
+      </div>
+
+      <div id="error" class="hidden rounded-3xl border border-rose-500/20 bg-rose-500/10 p-6 text-center">
+        <p class="font-semibold text-rose-200">Could not load jobs</p>
+        <p id="error-detail" class="mt-2 text-sm text-rose-300/70"></p>
+        <ol class="mt-4 space-y-1 text-left text-xs text-slate-400">
+          <li>1. <code class="text-slate-300">python scraper.py</code></li>
+          <li>2. <code class="text-slate-300">python server.py</code></li>
+          <li>3. Open <code class="text-slate-300">http://localhost:8000</code></li>
+        </ol>
+      </div>
+
+      <div id="empty" class="hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] px-6 py-14 text-center">
+        <p class="text-base font-semibold text-slate-200">No matches</p>
+        <p class="mt-1 text-sm text-slate-500">Try another keyword or clear the search.</p>
+      </div>
+
+      <ul id="job-list" class="hidden space-y-3"></ul>
+    </main>
+
+    <footer class="px-4 pb-6 text-center text-[11px] text-slate-600 sm:px-5">
+      Live data · <span class="text-slate-500">python scraper.py</span> then <span class="text-slate-500">python server.py</span>
+    </footer>
+  </div>
+
+  <template id="job-card-template">
+    <li>
+      <a
+        class="job-card group relative block overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.04] p-4 shadow-card transition active:scale-[0.99] hover:border-cyan-500/30 hover:bg-white/[0.06] sm:p-5"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div class="card-shine pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100"></div>
+        <div class="relative flex gap-4">
+          <div class="job-avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/30 to-rose-500/20 text-sm font-bold text-cyan-200 ring-1 ring-white/10"></div>
+          <div class="min-w-0 flex-1">
+            <h2 class="job-title line-clamp-2 text-[15px] font-semibold leading-snug text-white group-hover:text-cyan-100"></h2>
+            <p class="job-company mt-1 truncate text-sm text-slate-400"></p>
+            <div class="mt-2 flex flex-wrap gap-1.5">
+              <span class="job-category inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"></span>
+              <span class="job-source inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"></span>
+            </div>
+            <p class="mt-2 flex items-center gap-1 text-xs font-medium text-cyan-500/90 opacity-0 transition group-hover:opacity-100">
+              View listing
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </p>
+          </div>
+          <svg class="mt-1 h-5 w-5 shrink-0 text-slate-600 transition group-hover:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </div>
+      </a>
+    </li>
+  </template>
+
+  <script>
+    const listEl = document.getElementById('job-list');
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const emptyEl = document.getElementById('empty');
+    const metaEl = document.getElementById('meta');
+    const searchEl = document.getElementById('search');
+    const clearBtn = document.getElementById('clear-search');
+    const template = document.getElementById('job-card-template');
+    const alertsSection = document.getElementById('alerts-section');
+    const subscribeForm = document.getElementById('subscribe-form');
+    const subscribeBtn = document.getElementById('subscribe-btn');
+    const subscribeBtnLabel = document.getElementById('subscribe-btn-label');
+    const subscribeSpinner = document.getElementById('subscribe-spinner');
+    const subscribeMessage = document.getElementById('subscribe-message');
+
+    let allJobs = [];
+
+    const CATEGORY_STYLES = {
+      Tech: 'bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/30',
+      Admin: 'bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/30',
+      Retail: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30',
+      Other: 'bg-slate-500/15 text-slate-400 ring-1 ring-slate-500/30',
+    };
+
+    const SOURCE_STYLES = {
+      CaribbeanJobs: 'bg-amber-500/15 text-amber-200 ring-1 ring-amber-500/30',
+      'SVG Gov': 'bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500/30',
+    };
+
+    function companyInitials(name) {
+      const words = name.trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return '?';
+      if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+
+    function formatScrapedAt(iso) {
+      if (!iso) return '';
+      try {
+        return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+      } catch {
+        return iso;
+      }
+    }
+
+    function updateMeta(visibleCount) {
+      const total = allJobs.length;
+      const when = document.body.dataset.scrapedAt
+        ? ` · ${formatScrapedAt(document.body.dataset.scrapedAt)}`
+        : '';
+      metaEl.textContent =
+        visibleCount === total
+          ? `${total} open role${total === 1 ? '' : 's'}${when}`
+          : `${visibleCount} of ${total} roles${when}`;
+    }
+
+    function renderJobs(jobs) {
+      listEl.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      jobs.forEach((job) => {
+        const node = template.content.cloneNode(true);
+        const card = node.querySelector('.job-card');
+        node.querySelector('.job-title').textContent = job.title;
+        node.querySelector('.job-company').textContent = job.company;
+        node.querySelector('.job-avatar').textContent = companyInitials(job.company);
+
+        const cat = job.category || 'Other';
+        const catBadge = node.querySelector('.job-category');
+        catBadge.textContent = cat;
+        catBadge.className = `job-category inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${CATEGORY_STYLES[cat] || CATEGORY_STYLES.Other}`;
+
+        const src = job.source || 'Unknown';
+        const srcBadge = node.querySelector('.job-source');
+        srcBadge.textContent = src;
+        srcBadge.className = `job-source inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${SOURCE_STYLES[src] || 'bg-slate-500/15 text-slate-400 ring-1 ring-slate-500/30'}`;
+
+        if (job.url) {
+          card.href = job.url;
+        } else {
+          card.href = '#';
+          card.classList.add('pointer-events-none', 'opacity-60');
+          card.removeAttribute('target');
+        }
+
+        fragment.appendChild(node);
+      });
+
+      listEl.appendChild(fragment);
+      const hasResults = jobs.length > 0;
+      listEl.classList.toggle('hidden', !hasResults);
+      emptyEl.classList.toggle('hidden', hasResults);
+      updateMeta(jobs.length);
+    }
+
+    function filterJobs(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) return allJobs;
+      return allJobs.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.company.toLowerCase().includes(q) ||
+          (j.category || '').toLowerCase().includes(q) ||
+          (j.source || '').toLowerCase().includes(q)
+      );
+    }
+
+    function showSubscribeMessage(text, isSuccess) {
+      subscribeMessage.textContent = text;
+      subscribeMessage.classList.remove('hidden', 'bg-rose-500/15', 'text-rose-200', 'bg-emerald-500/15', 'text-emerald-200');
+      if (isSuccess) {
+        subscribeMessage.classList.add('bg-emerald-500/15', 'text-emerald-200');
+      } else {
+        subscribeMessage.classList.add('bg-rose-500/15', 'text-rose-200');
+      }
+    }
+
+    subscribeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value.trim();
+      const category = document.getElementById('category').value;
+
+      subscribeBtn.disabled = true;
+      subscribeBtnLabel.textContent = 'Subscribing…';
+      subscribeSpinner.classList.remove('hidden');
+      subscribeMessage.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, category }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Subscription failed');
+        }
+        showSubscribeMessage(data.message, true);
+        if (data.is_new) subscribeForm.reset();
+      } catch (err) {
+        showSubscribeMessage(err.message, false);
+      } finally {
+        subscribeBtn.disabled = false;
+        subscribeBtnLabel.textContent = 'Subscribe to alerts';
+        subscribeSpinner.classList.add('hidden');
+      }
+    });
+
+    async function loadJobs() {
+      let res = await fetch('/api/jobs', { cache: 'no-store' });
+      if (res.ok) return res.json();
+      res = await fetch('jobs.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    function onSearchInput() {
+      const value = searchEl.value;
+      clearBtn.classList.toggle('hidden', !value);
+      renderJobs(filterJobs(value));
+    }
+
+    searchEl.addEventListener('input', onSearchInput);
+    clearBtn.addEventListener('click', () => {
+      searchEl.value = '';
+      onSearchInput();
+      searchEl.focus();
+    });
+
+    async function init() {
+      try {
+        const data = await loadJobs();
+        allJobs = Array.isArray(data.jobs) ? data.jobs : [];
+        document.body.dataset.scrapedAt = data.scraped_at || '';
+
+        loadingEl.classList.add('hidden');
+        alertsSection.classList.remove('hidden');
+
+        if (!allJobs.length) {
+          emptyEl.classList.remove('hidden');
+          metaEl.textContent = 'No jobs — run python scraper.py';
+          return;
+        }
+
+        renderJobs(allJobs);
+      } catch (err) {
+        loadingEl.classList.add('hidden');
+        errorEl.classList.remove('hidden');
+        document.getElementById('error-detail').textContent =
+          `${err.message}. Run python server.py (not file://).`;
+        metaEl.textContent = '';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
