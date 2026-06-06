@@ -25,8 +25,8 @@ from typing import Any
 import database as db
 
 # --- Twilio credentials (paste your keys here) ---
-TWILIO_ACCOUNT_SID = "AC9a3b14b54b8ce9c97c9cc62f69b32cdf"
-TWILIO_AUTH_TOKEN = "6530af2a11ea18c7b5d7b5c29d762442"
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID", "YOUR_FALLBACK_SID_IF_LOCAL")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN", "YOUR_FALLBACK_TOKEN_IF_LOCAL")
 TWILIO_WHATSAPP_NUMBER = "+14155238886"
 # -------------------------------------------------
 
