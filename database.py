@@ -76,6 +76,10 @@ def _migrate_schema(conn: sqlite3.Connection) -> None:
         conn.execute(
             "ALTER TABLE jobs ADD COLUMN source TEXT NOT NULL DEFAULT 'CaribbeanJobs'"
         )
+    if "listing_type" not in columns:
+        conn.execute(
+            "ALTER TABLE jobs ADD COLUMN listing_type TEXT NOT NULL DEFAULT 'Job'"
+        )
 
 
 def init_db() -> None:
@@ -107,14 +111,15 @@ def upsert_jobs(jobs: list[dict[str, Any]], scraped_at: str) -> int:
         for job in jobs:
             conn.execute(
                 """
-                INSERT INTO jobs (external_id, title, company, url, category, source, scraped_at, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO jobs (external_id, title, company, url, category, source, listing_type, scraped_at, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(external_id) DO UPDATE SET
                     title = excluded.title,
                     company = excluded.company,
                     url = excluded.url,
                     category = excluded.category,
                     source = excluded.source,
+                    listing_type = excluded.listing_type,
                     scraped_at = excluded.scraped_at
                 """,
                 (
@@ -124,6 +129,7 @@ def upsert_jobs(jobs: list[dict[str, Any]], scraped_at: str) -> int:
                     job.get("url"),
                     job.get("category", "Other"),
                     job.get("source", "CaribbeanJobs"),
+                    job.get("listing_type", "Job"),
                     scraped_at,
                     now,
                 ),
@@ -181,7 +187,7 @@ def list_jobs(limit: int = 100) -> list[dict[str, Any]]:
     with get_connection() as conn:
         rows = conn.execute(
             """
-            SELECT title, company, url, category, source, scraped_at
+            SELECT title, company, url, category, source, listing_type, scraped_at
             FROM jobs
             ORDER BY scraped_at DESC, id DESC
             LIMIT ?

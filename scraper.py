@@ -3,6 +3,7 @@ Multi-source Caribbean job scraper engine.
 
 Source #1 — CaribbeanJobs.com (regional private-sector listings)
 Source #2 — SVG Public Service Commission (psc.gov.vc government vacancies)
+Source #3 — Youth development & summer programs (mock listings)
 
 HOW TO RUN:
   pip install -r requirements.txt
@@ -23,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 import database as db
-from sources import CaribbeanJobsSource, ScrapeResult, SvgGovSource
+from sources import CaribbeanJobsSource, ScrapeResult, SummerProgramsSource, SvgGovSource
 from sources.base import JobSource
 
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -34,7 +35,7 @@ MOCK_SVG_HTML = PROJECT_DIR / "mock_svg_vacancies.html"
 # Set True to read local HTML mocks instead of live websites.
 USE_LOCAL_FILE = False
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 def get_sources() -> list[JobSource]:
@@ -47,6 +48,7 @@ def get_sources() -> list[JobSource]:
             use_local_mock=USE_LOCAL_FILE,
             mock_path=MOCK_SVG_HTML,
         ),
+        SummerProgramsSource(),
     ]
 
 
@@ -85,9 +87,12 @@ def build_export_payload(
 ) -> dict[str, Any]:
     by_category: dict[str, int] = {}
     by_source: dict[str, int] = {}
+    by_listing_type: dict[str, int] = {}
     for job in jobs:
         by_category[job["category"]] = by_category.get(job["category"], 0) + 1
         by_source[job["source"]] = by_source.get(job["source"], 0) + 1
+        listing_type = job.get("listing_type", "Job")
+        by_listing_type[listing_type] = by_listing_type.get(listing_type, 0) + 1
 
     source_meta = []
     for r in results:
@@ -109,6 +114,7 @@ def build_export_payload(
         "summary": {
             "by_category": by_category,
             "by_source": by_source,
+            "by_listing_type": by_listing_type,
         },
         "jobs": jobs,
     }
@@ -145,11 +151,13 @@ def main() -> None:
 
     print(f"Saved {payload['count']} job(s) -> {JOBS_JSON.name}, {db.DB_PATH.name}")
     print(f"By source: {payload['summary']['by_source']}")
-    print(f"By category: {payload['summary']['by_category']}\n")
+    print(f"By category: {payload['summary']['by_category']}")
+    print(f"By listing type: {payload['summary']['by_listing_type']}\n")
 
     for i, job in enumerate(jobs, start=1):
+        listing_type = job.get("listing_type", "Job")
         print(
-            f"{i}. [{job['source']}] [{job['category']}] "
+            f"{i}. [{listing_type}] [{job['source']}] [{job['category']}] "
             f"{job['title']} @ {job['company']}"
         )
 

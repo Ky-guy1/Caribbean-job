@@ -1,12 +1,12 @@
 {
-  "schema_version": 2,
-  "scraped_at": "2026-06-05T16:06:45.066260+00:00",
-  "count": 29,
+  "schema_version": 3,
+  "scraped_at": "2026-06-06T20:01:39.337165+00:00",
+  "count": 31,
   "sources": [
     {
       "id": "CaribbeanJobs",
       "url": "https://www.caribbeanjobs.com/ShowResults.aspx?Keywords=&Page=1&PerPage=25&SortBy=Most+Recent",
-      "count": 25,
+      "count": 24,
       "status": "ok",
       "error": null
     },
@@ -16,220 +16,248 @@
       "count": 4,
       "status": "ok",
       "error": null
+    },
+    {
+      "id": "Youth Programs",
+      "url": "mock://summer-programs",
+      "count": 3,
+      "status": "ok",
+      "error": null
     }
   ],
   "summary": {
     "by_category": {
-      "Admin": 12,
-      "Other": 7,
-      "Tech": 4,
-      "Retail": 6
+      "Other": 10,
+      "Admin": 13,
+      "Retail": 7,
+      "Tech": 1
     },
     "by_source": {
-      "CaribbeanJobs": 25,
-      "SVG Gov": 4
+      "CaribbeanJobs": 24,
+      "SVG Gov": 4,
+      "Youth Programs": 3
+    },
+    "by_listing_type": {
+      "Job": 28,
+      "Summer Program": 3
     }
   },
   "jobs": [
     {
-      "title": "Loans Officer (Sales)",
-      "company": "Dolla Financial Services Ltd",
-      "url": "https://www.caribbeanjobs.com/Loans-Officer-Sales-Job-231526.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:231526"
-    },
-    {
-      "title": "Panel for the Development of Code of Ethics",
-      "company": "Real Estate Board/Commission of Strata Corporations",
-      "url": "https://www.caribbeanjobs.com/Panel-for-the-Development-of-Job-233082.aspx",
+      "title": "Bartender",
+      "company": "Usain Bolt’s Tracks & Records (KLE Group)",
+      "url": "https://www.caribbeanjobs.com/Bartender-Job-233137.aspx",
       "category": "Other",
       "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233082"
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233137"
     },
     {
-      "title": "Client Success and Software Implementation Lead",
-      "company": "Joni Gaye Cawley & Associates",
-      "url": "https://www.caribbeanjobs.com/Client-Success-and-Software-Implementation-Job-233084.aspx",
+      "title": "Hostess, Food Runners, Steward, Admin Assistant",
+      "company": "Usain Bolt’s Tracks & Records (KLE Group)",
+      "url": "https://www.caribbeanjobs.com/Hostess-Food-Runners-Steward-Admin-Job-233138.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233138"
+    },
+    {
+      "title": "1st Party Collection Agent 560 PER HOUR (MONTEGO BAY)",
+      "company": "Segoso",
+      "url": "https://www.caribbeanjobs.com/1st-Party-Collection-Agent-560-Job-233136.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233136"
+    },
+    {
+      "title": "Banking Representative - Up to JMD 625 per hour",
+      "company": "Hinduja Global Solutions (HGS)",
+      "url": "https://www.caribbeanjobs.com/Banking-Representative-Up-to-JMD-Job-232007.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:232007"
+    },
+    {
+      "title": "Marketing Coordinator",
+      "company": "Eve Anderson Recruitment Ltd",
+      "url": "https://www.caribbeanjobs.com/Marketing-Coordinator-Job-233135.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233135"
+    },
+    {
+      "title": "Collections & Receivables Officer",
+      "company": "Fraser Fontaine & Kong Ltd",
+      "url": "https://www.caribbeanjobs.com/Collections-Receivables-Officer-Job-233029.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233029"
+    },
+    {
+      "title": "Cost Accountant",
+      "company": "Jo-Anne Mouttet & Associates",
+      "url": "https://www.caribbeanjobs.com/Cost-Accountant-Job-233134.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233134"
+    },
+    {
+      "title": "EMPLOYEE BENEFITS REPRESENTATIVE",
+      "company": "Fraser Fontaine & Kong Ltd",
+      "url": "https://www.caribbeanjobs.com/EMPLOYEE-BENEFITS-REPRESENTATIVE-Job-233036.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233036"
+    },
+    {
+      "title": "Office Attendant",
+      "company": "Fraser Fontaine & Kong Ltd",
+      "url": "https://www.caribbeanjobs.com/Office-Attendant-Job-233133.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233133"
+    },
+    {
+      "title": "Receptionist - Telephone Operator",
+      "company": "Fraser Fontaine & Kong Ltd",
+      "url": "https://www.caribbeanjobs.com/Receptionist-Telephone-Operator-Job-233037.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233037"
+    },
+    {
+      "title": "Financial Accountant",
+      "company": "Eve Anderson Recruitment Ltd",
+      "url": "https://www.caribbeanjobs.com/Financial-Accountant-Job-233131.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233131"
+    },
+    {
+      "title": "Sales agent-Microfinance",
+      "company": "Island HR Solutions",
+      "url": "https://www.caribbeanjobs.com/Sales-agent-Microfinance-Job-233130.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233130"
+    },
+    {
+      "title": "Senior Associate – Corporate Department",
+      "company": "Profiles Caribbean, Inc.",
+      "url": "https://www.caribbeanjobs.com/Senior-Associate-Corporate-Department-Job-233129.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233129"
+    },
+    {
+      "title": "Manager, Public Relations",
+      "company": "Ministry of Industry, Investment & Commerce",
+      "url": "https://www.caribbeanjobs.com/Manager-Public-Relations-Job-233128.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233128"
+    },
+    {
+      "title": "June 8 - WE ARE HIRING - Are you a SOLUTION SEEKER - Tech Support Representative",
+      "company": "Teleperformance",
+      "url": "https://www.caribbeanjobs.com/June-8-WE-ARE-HIRING-Job-231412.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:231412"
+    },
+    {
+      "title": "June 8 - WE ARE HIRING - Are you an EXPERIENCE CURATOR  - Customer Service Representative",
+      "company": "Teleperformance",
+      "url": "https://www.caribbeanjobs.com/June-8-WE-ARE-HIRING-Job-231413.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:231413"
+    },
+    {
+      "title": "June 8 - WE ARE HIRING - Are you a FRIENDLY FIXER - Collections Experts",
+      "company": "Teleperformance",
+      "url": "https://www.caribbeanjobs.com/June-8-WE-ARE-HIRING-Job-231415.aspx",
+      "category": "Retail",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:231415"
+    },
+    {
+      "title": "June 8 - WE ARE HIRING - Walk-In and Get Hired TODAY",
+      "company": "Teleperformance",
+      "url": "https://www.caribbeanjobs.com/June-8-WE-ARE-HIRING-Job-231416.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:231416"
+    },
+    {
+      "title": "June 8 - WE ARE HIRING - Spanish Bilingual - Earn up to 1200 JMD PER HOUR",
+      "company": "Teleperformance",
+      "url": "https://www.caribbeanjobs.com/June-8-WE-ARE-HIRING-Job-231418.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:231418"
+    },
+    {
+      "title": "Badge Specialist",
+      "company": "Teleperformance",
+      "url": "https://www.caribbeanjobs.com/Badge-Specialist-Job-232570.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:232570"
+    },
+    {
+      "title": "Director, Office Management & General Services",
+      "company": "Ministry of Industry, Investment & Commerce",
+      "url": "https://www.caribbeanjobs.com/Director-Office-Management-General-Services-Job-233127.aspx",
+      "category": "Admin",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233127"
+    },
+    {
+      "title": "Senior Manager -  Risk Management",
+      "company": "Sygnus Group",
+      "url": "https://www.caribbeanjobs.com/Senior-Manager-Risk-Management-Job-233123.aspx",
+      "category": "Other",
+      "source": "CaribbeanJobs",
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233123"
+    },
+    {
+      "title": "Internal Audit Manager - I.T. & Data Analytics",
+      "company": "Supreme Ventures Group",
+      "url": "https://www.caribbeanjobs.com/Internal-Audit-Manager-I-T-Job-233125.aspx",
       "category": "Tech",
       "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233084"
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233125"
     },
     {
-      "title": "Junior Interior Designer",
-      "company": "Dwellings Group",
-      "url": "https://www.caribbeanjobs.com/Junior-Interior-Designer-Job-232817.aspx",
-      "category": "Other",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:232817"
-    },
-    {
-      "title": "Clinical Simulation Fellowship Program",
-      "company": "American University of Antigua College of Medicine",
-      "url": "https://www.caribbeanjobs.com/Clinical-Simulation-Fellowship-Program-Job-233083.aspx",
-      "category": "Other",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233083"
-    },
-    {
-      "title": "Medical Sales Representative",
-      "company": "Joni Gaye Cawley & Associates",
-      "url": "https://www.caribbeanjobs.com/Medical-Sales-Representative-Job-233081.aspx",
-      "category": "Retail",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233081"
-    },
-    {
-      "title": "Senior Manager – Finance Operations (Financial Services Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Senior-Manager-Finance-Operations-Financial-Job-233080.aspx",
-      "category": "Other",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233080"
-    },
-    {
-      "title": "Strategic Energy Senior Associate (Renewable Energy Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Strategic-Energy-Senior-Associate-Renewable-Job-233079.aspx",
-      "category": "Other",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233079"
-    },
-    {
-      "title": "Temporary Accountants (Financial Services Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Temporary-Accountants-Financial-Services-Sector-Job-233078.aspx",
+      "title": "ASSISTANT FOOD AND BEVERAGE MANAGER",
+      "company": "Princess Hotels & Resorts",
+      "url": "https://www.caribbeanjobs.com/ASSISTANT-FOOD-AND-BEVERAGE-MANAGER-Job-233124.aspx",
       "category": "Admin",
       "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233078"
-    },
-    {
-      "title": "Investment & Pension Fund Accountant (Insurance Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Investment-Pension-Fund-Accountant-Insurance-Job-233077.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233077"
-    },
-    {
-      "title": "Warehouse Manager (Distribution Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Warehouse-Manager-Distribution-Sector-Job-233076.aspx",
-      "category": "Other",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233076"
-    },
-    {
-      "title": "Electrical Engineering Project Manager (Construction Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Electrical-Engineering-Project-Manager-Construction-Job-233075.aspx",
-      "category": "Tech",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233075"
-    },
-    {
-      "title": "Sales Account Manager (I.T Solutions)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Sales-Account-Manager-I-T-Job-233074.aspx",
-      "category": "Retail",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233074"
-    },
-    {
-      "title": "Accounting Officer",
-      "company": "Joni Gaye Cawley & Associates",
-      "url": "https://www.caribbeanjobs.com/Accounting-Officer-Job-232756.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:232756"
-    },
-    {
-      "title": "TELECOMMUNICATIONS AGENTS KINGSTON- (onsite)",
-      "company": "Concentrix(CNX)",
-      "url": "https://www.caribbeanjobs.com/TELECOMMUNICATIONS-AGENTS-KINGSTON-onsite-Job-231596.aspx",
-      "category": "Retail",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:231596"
-    },
-    {
-      "title": "E-COMMERCE VOICE REPRESENTATIVES NEEDED (Onsite Kingston)..",
-      "company": "Concentrix(CNX)",
-      "url": "https://www.caribbeanjobs.com/E-COMMERCE-VOICE-REPRESENTATIVES-NEEDED-Job-232683.aspx",
-      "category": "Retail",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:232683"
-    },
-    {
-      "title": "FULL TIME Reservation Specialist (Customer Service) Kingston (Onsite)",
-      "company": "Concentrix(CNX)",
-      "url": "https://www.caribbeanjobs.com/FULL-TIME-Reservation-Specialist-Customer-Job-233015.aspx",
-      "category": "Retail",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233015"
-    },
-    {
-      "title": "Policy & Market Research Manager (Relocation to Bermuda)",
-      "company": "The Platinum Group Ltd",
-      "url": "https://www.caribbeanjobs.com/Policy-Market-Research-Manager-Relocation-Job-233073.aspx",
-      "category": "Other",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233073"
-    },
-    {
-      "title": "Purchasing Clerk",
-      "company": "ANSA McAL Group of Companies",
-      "url": "https://www.caribbeanjobs.com/Purchasing-Clerk-Job-233072.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233072"
-    },
-    {
-      "title": "Head Of Internal Audit (Financial Services Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Head-Of-Internal-Audit-Financial-Job-233071.aspx",
-      "category": "Tech",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233071"
-    },
-    {
-      "title": "Audit Manager (St. Lucia)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Audit-Manager-St-Lucia-Job-233070.aspx",
-      "category": "Tech",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233070"
-    },
-    {
-      "title": "Security Officer",
-      "company": "Excellent Stores Limited",
-      "url": "https://www.caribbeanjobs.com/Security-Officer-Job-233069.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233069"
-    },
-    {
-      "title": "Accounts Clerks (Real Estate Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Accounts-Clerks-Real-Estate-Sector-Job-233068.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233068"
-    },
-    {
-      "title": "Sales Account Executive (I.T Solutions)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Sales-Account-Executive-I-T-Job-233067.aspx",
-      "category": "Retail",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233067"
-    },
-    {
-      "title": "Regulatory Reporting Accountant (Insurance Sector)",
-      "company": "Favio",
-      "url": "https://www.caribbeanjobs.com/Regulatory-Reporting-Accountant-Insurance-Sector-Job-233066.aspx",
-      "category": "Admin",
-      "source": "CaribbeanJobs",
-      "external_id": "caribbeanjobs:233066"
+      "listing_type": "Job",
+      "external_id": "caribbeanjobs:233124"
     },
     {
       "title": "Chief Immigration Officer",
@@ -237,6 +265,7 @@
       "url": "https://psc.gov.vc/psc/images/PDF/Vacancies/Chief_Immigration_Officer.pdf",
       "category": "Admin",
       "source": "SVG Gov",
+      "listing_type": "Job",
       "external_id": "svggov:chief_immigration_officer"
     },
     {
@@ -245,6 +274,7 @@
       "url": "https://psc.gov.vc/psc/images/PDF/Vacancies/Chief_Parliamentart_Counsel.pdf",
       "category": "Admin",
       "source": "SVG Gov",
+      "listing_type": "Job",
       "external_id": "svggov:chief_parliamentart_counsel"
     },
     {
@@ -253,6 +283,7 @@
       "url": "https://psc.gov.vc/psc/images/PDF/Vacancies/Director_of_DPP.pdf",
       "category": "Admin",
       "source": "SVG Gov",
+      "listing_type": "Job",
       "external_id": "svggov:director_of_dpp"
     },
     {
@@ -261,7 +292,35 @@
       "url": "https://psc.gov.vc/psc/images/PDF/Vacancies/ADVERTISEMENT_-_Post_Of_Urban_Planner.pdf",
       "category": "Admin",
       "source": "SVG Gov",
+      "listing_type": "Job",
       "external_id": "svggov:advertisement_-_post_of_urban_planner"
+    },
+    {
+      "title": "SVG Ministry of Tourism Kids Camp",
+      "company": "SVG Ministry of Tourism",
+      "url": "https://www.gov.vc/youth/kids-camp",
+      "category": "Other",
+      "source": "Youth Programs",
+      "listing_type": "Summer Program",
+      "external_id": "summer-programs:svg-ministry-of-tourism-kids-camp"
+    },
+    {
+      "title": "NTRC Caribbean Coding Workshop",
+      "company": "NTRC",
+      "url": "https://www.ntrc.gov.vc/coding-workshop",
+      "category": "Other",
+      "source": "Youth Programs",
+      "listing_type": "Summer Program",
+      "external_id": "summer-programs:ntrc-caribbean-coding-workshop"
+    },
+    {
+      "title": "SVG Coast Guard Youth Program",
+      "company": "SVG Coast Guard",
+      "url": "https://www.coastguard.gov.vc/youth-program",
+      "category": "Other",
+      "source": "Youth Programs",
+      "listing_type": "Summer Program",
+      "external_id": "summer-programs:svg-coast-guard-youth-program"
     }
   ]
 }

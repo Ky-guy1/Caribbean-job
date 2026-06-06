@@ -49,6 +49,9 @@ def make_external_id(source_slug: str, unique_part: str) -> str:
     return f"{source_slug}:{safe or hashlib.sha256(unique_part.encode()).hexdigest()[:12]}"
 
 
+VALID_LISTING_TYPES = frozenset({"Job", "Summer Program"})
+
+
 def build_job_record(
     *,
     source_label: str,
@@ -57,15 +60,19 @@ def build_job_record(
     company: str,
     url: str | None,
     unique_part: str,
+    listing_type: str = "Job",
 ) -> dict[str, Any]:
     title = clean_text(title)
     company = clean_text(company)
     category = infer_category(title, company)
+    if listing_type not in VALID_LISTING_TYPES:
+        listing_type = "Job"
     return {
         "title": title,
         "company": company,
         "url": url,
         "category": category,
         "source": source_label,
+        "listing_type": listing_type,
         "external_id": make_external_id(source_slug, unique_part),
     }

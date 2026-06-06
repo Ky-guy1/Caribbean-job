@@ -47,6 +47,7 @@ def api_jobs():
                     "url": j["url"],
                     "category": j["category"],
                     "source": j.get("source", "CaribbeanJobs"),
+                    "listing_type": j.get("listing_type", "Job"),
                 }
                 for j in jobs
             ],
