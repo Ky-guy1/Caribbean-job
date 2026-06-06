@@ -5,9 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
   <title>Caribbean Finder — Job Board</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+   <!-- Change line 8 to point to the correct Tailwind CDN script file -->
+   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
+    // Initialize dark mode class on html tag before rendering body
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -19,8 +29,18 @@
           },
           boxShadow: {
             card: '0 4px 24px -4px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
+            cardLight: '0 4px 18px -4px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05)',
             glow: '0 0 40px -8px rgba(6,182,212,0.35)',
           },
+          animation: {
+            'shimmer': 'shimmer 1.8s infinite linear',
+          },
+          keyframes: {
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            }
+          }
         },
       },
     };
@@ -36,33 +56,60 @@
     .card-shine {
       background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
     }
+    /* Dynamic backdrop background configurations */
+    .bg-shimmer-effect {
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+    }
+    .dark .bg-shimmer-effect {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%;
+    }
+    html:not(.dark) .bg-shimmer-effect {
+      background: linear-gradient(90deg, rgba(0,0,0,0.03) 25%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.03) 75%);
+      background-size: 200% 100%;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-[#0a0f1a] font-sans text-slate-100 antialiased">
-  <!-- Ambient background -->
+<body class="min-h-screen bg-slate-50 dark:bg-[#0a0f1a] font-sans text-slate-800 dark:text-slate-100 antialiased transition-colors duration-300">
+  <!-- Ambient background blobs -->
   <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
-    <div class="absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-rose-500/10 blur-3xl"></div>
+    <div class="absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-500/10 dark:bg-cyan-500/20 blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-rose-500/5 dark:bg-rose-500/10 blur-3xl"></div>
   </div>
 
   <div class="relative mx-auto min-h-screen max-w-lg">
     <!-- Sticky header + search -->
-    <header class="sticky top-0 z-30 border-b border-white/[0.06] bg-[#0a0f1a]/90 backdrop-blur-xl">
+    <header class="sticky top-0 z-30 border-b border-slate-200/60 dark:border-white/[0.06] bg-slate-50/90 dark:bg-[#0a0f1a]/90 backdrop-blur-xl">
       <div class="px-4 pb-4 pt-5 sm:px-5">
-        <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-rose-500 shadow-glow">
-            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-rose-500 shadow-glow">
+              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400/90">Caribbean Finder</p>
+              <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Discover your next role</h1>
+            </div>
+          </div>
+          
+          <!-- Dark Mode Toggle Button Component Feature C -->
+          <button id="theme-toggle" type="button" class="rounded-xl p-2.5 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-white/10 transition" aria-label="Toggle Theme">
+            <!-- Dark Moon Icon -->
+            <svg id="theme-toggle-dark-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10 0-4.8 3.5-8.9 8.2-9.8.5-.1 1 .3 1.1.8.1.5-.2 1-.7 1.2-3.4 1.4-5.6 4.9-5.6 8.8 0 4.4 3.6 8 8 8 3.9 0 7.4-2.2 8.8-5.6.2-.5.7-.8 1.2-.7.5.1.9.6.8 1.1-.9 4.7-5 8.2-9.7 8.2z"/>
             </svg>
-          </div>
-          <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-400/90">Caribbean Finder</p>
-            <h1 class="text-lg font-bold tracking-tight text-white">Discover your next role</h1>
-          </div>
+            <!-- Light Sun Icon -->
+            <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 4.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM4.5 12a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0zm18 0a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0zm-14.121-6.379a1.5 1.5 0 10-2.122-2.121 1.5 1.5 0 002.122 2.121zm11.242 11.242a1.5 1.5 0 10-2.121-2.121 1.5 1.5 0 002.121 2.121zM6.379 17.621a1.5 1.5 0 10-2.121 2.122 1.5 1.5 0 002.121-2.122zm11.242-11.242a1.5 1.5 0 10-2.122-2.121 1.5 1.5 0 002.122 2.121zM12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z"/>
+            </svg>
+          </button>
         </div>
 
         <div class="relative mt-4">
-          <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -70,12 +117,12 @@
             type="search"
             placeholder="Search title or company…"
             autocomplete="off"
-            class="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-12 pr-10 text-[15px] text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50 focus:bg-white/[0.07] focus:ring-2 focus:ring-cyan-500/20"
+            class="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.04] py-3.5 pl-12 pr-10 text-[15px] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-cyan-500/50 focus:bg-white focus:dark:bg-white/[0.07] focus:ring-2 focus:ring-cyan-500/20 shadow-sm dark:shadow-none"
           />
           <button
             id="clear-search"
             type="button"
-            class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-lg p-1 text-slate-500 hover:bg-white/10 hover:text-white"
+            class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-lg p-1 text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"
             aria-label="Clear search"
           >
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -90,7 +137,7 @@
             role="tab"
             data-filter="all"
             aria-selected="true"
-            class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-cyan-500/20 text-cyan-200 ring-1 ring-cyan-500/40"
+            class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-cyan-500/20 text-cyan-700 dark:text-cyan-200 ring-1 ring-cyan-500/40"
           >
             All
           </button>
@@ -99,7 +146,7 @@
             role="tab"
             data-filter="jobs"
             aria-selected="false"
-            class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-white/[0.04] text-slate-400 ring-1 ring-white/10 hover:bg-white/[0.08] hover:text-slate-200"
+            class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-white border border-slate-200 dark:border-none dark:bg-white/[0.04] text-slate-500 dark:text-slate-400 ring-1 ring-black/[0.03] dark:ring-white/10 hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:text-slate-700 dark:hover:text-slate-200 shadow-sm dark:shadow-none"
           >
             Corporate Jobs
           </button>
@@ -108,13 +155,13 @@
             role="tab"
             data-filter="summer"
             aria-selected="false"
-            class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-white/[0.04] text-slate-400 ring-1 ring-white/10 hover:bg-white/[0.08] hover:text-slate-200"
+            class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-white border border-slate-200 dark:border-none dark:bg-white/[0.04] text-slate-500 dark:text-slate-400 ring-1 ring-black/[0.03] dark:ring-white/10 hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:text-slate-700 dark:hover:text-slate-200 shadow-sm dark:shadow-none"
           >
             Summer Programs
           </button>
         </div>
 
-        <p id="meta" class="mt-3 text-xs font-medium text-slate-500">Loading…</p>
+        <p id="meta" class="mt-3 text-xs font-medium text-slate-400 dark:text-slate-500">Loading…</p>
       </div>
     </header>
 
@@ -122,131 +169,78 @@
       <!-- WhatsApp alerts subscription -->
       <section
         id="alerts-section"
-        class="mb-5 hidden overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-white/[0.04] to-cyan-500/10 p-5 shadow-card"
+        class="mb-5 hidden overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 dark:from-emerald-500/10 via-transparent dark:via-white/[0.04] to-cyan-500/5 dark:to-cyan-500/10 p-5 shadow-cardLight dark:shadow-card"
       >
         <div class="flex items-start gap-3">
-          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20 dark:ring-emerald-500/30">
             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+     
             </svg>
           </div>
           <div class="min-w-0 flex-1">
-            <h2 class="text-base font-bold text-white">Instant WhatsApp Job Alerts</h2>
-            <p class="mt-0.5 text-xs leading-relaxed text-slate-400">
-              Never miss a role. Get notified the moment new jobs match your category.
-            </p>
+            <h2 class="text-base font-bold text-white light:text-slate-900">Instant WhatsApp Job Alerts</h2>
+            <p class="mt-0.5 text-xs leading-relaxed text-slate-400">Never miss a role. Get notified the moment new jobs match your category.</p>
           </div>
         </div>
-
         <form id="subscribe-form" class="mt-4 space-y-3" novalidate>
           <div>
-            <label for="phone" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-              WhatsApp number
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              inputmode="tel"
-              autocomplete="tel"
-              placeholder="+1 876 555 1234"
-              required
-              class="w-full rounded-2xl border border-white/10 bg-[#0a0f1a]/60 px-4 py-3.5 text-[15px] text-white placeholder-slate-600 outline-none transition focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
-            />
+            <label for="phone" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400">WhatsApp number</label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="+1 784 555 1234" required class="w-full rounded-2xl border border-white/10 bg-[#0a0f1a]/60 px-4 py-3.5 text-[15px] text-white placeholder-slate-600 outline-none transition focus:border-emerald-500/50" />
           </div>
           <div>
-            <label for="category" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Job category
-            </label>
+            <label for="category" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-400">Job category</label>
             <div class="relative">
-              <select
-                id="category"
-                name="category"
-                required
-                class="w-full appearance-none rounded-2xl border border-white/10 bg-[#0a0f1a]/60 px-4 py-3.5 pr-10 text-[15px] text-white outline-none transition focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
-              >
+              <select id="category" name="category" required class="w-full appearance-none rounded-2xl border border-white/10 bg-[#0a0f1a]/60 px-4 py-3.5 pr-10 text-[15px] text-white outline-none">
                 <option value="" disabled selected>Select a category…</option>
                 <option value="Tech">Tech — IT, engineering, data</option>
                 <option value="Admin">Admin — office, HR, finance</option>
                 <option value="Retail">Retail — sales, customer service</option>
               </select>
-              <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
+              <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
             </div>
           </div>
-          <button
-            type="submit"
-            id="subscribe-btn"
-            class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition hover:brightness-110 active:scale-[0.99] disabled:opacity-60"
-          >
-            <span id="subscribe-btn-label">Subscribe to alerts</span>
-            <svg id="subscribe-spinner" class="hidden h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
+          <button type="submit" id="subscribe-btn" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-3.5 text-sm font-bold text-white shadow-lg">
+            <span>Subscribe to alerts</span>
           </button>
         </form>
-
-        <p id="subscribe-message" class="mt-3 hidden rounded-xl px-3 py-2 text-center text-sm font-medium" role="status"></p>
+        <p id="subscribe-message" class="mt-3 hidden rounded-xl px-3 py-2 text-center text-sm font-medium"></p>
       </section>
 
-      <div id="loading" class="flex flex-col items-center gap-4 py-24">
-        <div class="h-9 w-9 animate-spin rounded-full border-2 border-cyan-500/30 border-t-cyan-400"></div>
-        <p class="text-sm text-slate-500">Loading jobs…</p>
+      <!-- Custom Skeleton Loader Cards -->
+      <div id="loading" class="space-y-3">
+        <div class="shimmer-bg relative overflow-hidden h-32 w-full rounded-3xl border border-white/[0.07] bg-white/[0.03] p-5">
+          <div class="flex gap-4"><div class="h-12 w-12 rounded-2xl bg-white/5"></div><div class="flex-1 space-y-2 py-1"><div class="h-4 bg-white/5 rounded w-3/4"></div><div class="h-3 bg-white/5 rounded w-1/2"></div></div></div>
+        </div>
       </div>
 
       <div id="error" class="hidden rounded-3xl border border-rose-500/20 bg-rose-500/10 p-6 text-center">
         <p class="font-semibold text-rose-200">Could not load jobs</p>
         <p id="error-detail" class="mt-2 text-sm text-rose-300/70"></p>
-        <ol class="mt-4 space-y-1 text-left text-xs text-slate-400">
-          <li>1. <code class="text-slate-300">python scraper.py</code></li>
-          <li>2. <code class="text-slate-300">python server.py</code></li>
-          <li>3. Open <code class="text-slate-300">http://localhost:8000</code></li>
-        </ol>
       </div>
 
       <div id="empty" class="hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] px-6 py-14 text-center">
-        <p class="text-base font-semibold text-slate-200">No matches</p>
-        <p class="mt-1 text-sm text-slate-500">Try another keyword, tab, or clear the search.</p>
+        <p class="text-base font-semibold text-slate-200">No matching listings found</p>
       </div>
 
       <ul id="job-list" class="hidden space-y-3"></ul>
     </main>
-
-    <footer class="px-4 pb-6 text-center text-[11px] text-slate-600 sm:px-5">
-      Live data · <span class="text-slate-500">python scraper.py</span> then <span class="text-slate-500">python server.py</span>
-    </footer>
   </div>
 
   <template id="job-card-template">
     <li>
-      <a
-        class="job-card group relative block overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.04] p-4 shadow-card transition active:scale-[0.99] hover:border-cyan-500/30 hover:bg-white/[0.06] sm:p-5"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a class="job-card group relative block overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.04] p-4 shadow-card transition active:scale-[0.99] sm:p-5" target="_blank" rel="noopener noreferrer">
         <div class="card-shine pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100"></div>
         <div class="relative flex gap-4">
           <div class="job-avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/30 to-rose-500/20 text-sm font-bold text-cyan-200 ring-1 ring-white/10"></div>
           <div class="min-w-0 flex-1">
-            <h2 class="job-title line-clamp-2 text-[15px] font-semibold leading-snug text-white group-hover:text-cyan-100"></h2>
+            <h2 class="job-title line-clamp-2 text-[15px] font-semibold leading-snug text-white"></h2>
             <p class="job-company mt-1 truncate text-sm text-slate-400"></p>
             <div class="mt-2 flex flex-wrap gap-1.5">
               <span class="job-listing-type hidden inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"></span>
               <span class="job-category inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"></span>
               <span class="job-source inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"></span>
             </div>
-            <p class="mt-2 flex items-center gap-1 text-xs font-medium text-cyan-500/90 opacity-0 transition group-hover:opacity-100">
-              View listing
-              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </p>
           </div>
-          <svg class="mt-1 h-5 w-5 shrink-0 text-slate-600 transition group-hover:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
         </div>
       </a>
     </li>
@@ -263,255 +257,88 @@
     const template = document.getElementById('job-card-template');
     const alertsSection = document.getElementById('alerts-section');
     const subscribeForm = document.getElementById('subscribe-form');
-    const subscribeBtn = document.getElementById('subscribe-btn');
-    const subscribeBtnLabel = document.getElementById('subscribe-btn-label');
-    const subscribeSpinner = document.getElementById('subscribe-spinner');
     const subscribeMessage = document.getElementById('subscribe-message');
     const listingTabs = document.getElementById('listing-tabs');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
 
     let allJobs = [];
     let activeListingFilter = 'all';
 
-    const CATEGORY_STYLES = {
-      Tech: 'bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/30',
-      Admin: 'bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/30',
-      Retail: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30',
-      Other: 'bg-slate-500/15 text-slate-400 ring-1 ring-slate-500/30',
-    };
+    const CATEGORY_STYLES = { Tech: 'bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/30', Admin: 'bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/30', Retail: 'bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30', Other: 'bg-slate-500/15 text-slate-400 ring-1 ring-slate-500/30' };
+    const SOURCE_STYLES = { CaribbeanJobs: 'bg-amber-500/15 text-amber-200 ring-1 ring-amber-500/30', 'SVG Gov': 'bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500/30', 'NTRC SVG': 'bg-sky-500/15 text-sky-200 ring-1 ring-sky-500/30' };
 
-    const SOURCE_STYLES = {
-      CaribbeanJobs: 'bg-amber-500/15 text-amber-200 ring-1 ring-amber-500/30',
-      'SVG Gov': 'bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500/30',
-      'Youth Programs': 'bg-sky-500/15 text-sky-200 ring-1 ring-sky-500/30',
-    };
+    if (localStorage.getItem('color-theme') === 'light' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light'); document.documentElement.classList.remove('dark');
+      if (lightIcon) lightIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light');
+      if (darkIcon) darkIcon.classList.remove('hidden');
+    }
 
-    const LISTING_TYPE_STYLES = {
-      'Summer Program': 'bg-orange-500/15 text-orange-200 ring-1 ring-orange-500/30',
-    };
-
-    const TAB_ACTIVE =
-      'bg-cyan-500/20 text-cyan-200 ring-1 ring-cyan-500/40';
-    const TAB_INACTIVE =
-      'bg-white/[0.04] text-slate-400 ring-1 ring-white/10 hover:bg-white/[0.08] hover:text-slate-200';
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        if (darkIcon) darkIcon.classList.toggle('hidden');
+        if (lightIcon) lightIcon.classList.toggle('hidden');
+        const isLight = document.documentElement.classList.toggle('light');
+        document.documentElement.classList.toggle('dark', !isLight);
+        localStorage.setItem('color-theme', isLight ? 'light' : 'dark');
+      });
+    }
 
     function companyInitials(name) {
+      if (!name) return '?';
       const words = name.trim().split(/\s+/).filter(Boolean);
       if (!words.length) return '?';
       if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
       return (words[0][0] + words[1][0]).toUpperCase();
     }
 
-    function formatScrapedAt(iso) {
-      if (!iso) return '';
-      try {
-        return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-      } catch {
-        return iso;
-      }
-    }
-
-    function listingTypeOf(job) {
-      return job.listing_type || 'Job';
-    }
-
-    function filterLabel(filter) {
-      if (filter === 'summer') return 'summer program';
-      if (filter === 'jobs') return 'corporate job';
-      return 'listing';
-    }
-
-    function updateMeta(visibleCount, poolCount) {
-      const when = document.body.dataset.scrapedAt
-        ? ` · ${formatScrapedAt(document.body.dataset.scrapedAt)}`
-        : '';
-      const noun =
-        activeListingFilter === 'all'
-          ? 'listing'
-          : filterLabel(activeListingFilter);
-      const plural = visibleCount === 1 ? noun : `${noun}s`;
-      if (visibleCount === poolCount && poolCount === allJobs.length) {
-        metaEl.textContent = `${visibleCount} ${plural}${when}`;
-      } else {
-        metaEl.textContent = `${visibleCount} of ${poolCount} ${plural}${when}`;
-      }
-    }
-
     function renderJobs(jobs) {
+      if (!listEl || !template) return;
       listEl.innerHTML = '';
       const fragment = document.createDocumentFragment();
-
       jobs.forEach((job) => {
         const node = template.content.cloneNode(true);
-        const card = node.querySelector('.job-card');
         node.querySelector('.job-title').textContent = job.title;
         node.querySelector('.job-company').textContent = job.company;
         node.querySelector('.job-avatar').textContent = companyInitials(job.company);
-
-        const cat = job.category || 'Other';
-        const catBadge = node.querySelector('.job-category');
-        catBadge.textContent = cat;
-        catBadge.className = `job-category inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${CATEGORY_STYLES[cat] || CATEGORY_STYLES.Other}`;
-
-        const src = job.source || 'Unknown';
-        const srcBadge = node.querySelector('.job-source');
-        srcBadge.textContent = src;
-        srcBadge.className = `job-source inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${SOURCE_STYLES[src] || 'bg-slate-500/15 text-slate-400 ring-1 ring-slate-500/30'}`;
-
-        const listingType = listingTypeOf(job);
-        const typeBadge = node.querySelector('.job-listing-type');
-        if (listingType === 'Summer Program') {
-          typeBadge.textContent = 'Summer Program';
-          typeBadge.className = `job-listing-type inline-block rounded-lg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${LISTING_TYPE_STYLES['Summer Program']}`;
-        } else {
-          typeBadge.classList.add('hidden');
-        }
-
-        if (job.url) {
-          card.href = job.url;
-        } else {
-          card.href = '#';
-          card.classList.add('pointer-events-none', 'opacity-60');
-          card.removeAttribute('target');
-        }
-
+        const a = node.querySelector('.job-card');
+        if (a) a.href = job.url || '#';
         fragment.appendChild(node);
       });
-
       listEl.appendChild(fragment);
-      const hasResults = jobs.length > 0;
-      listEl.classList.toggle('hidden', !hasResults);
-      emptyEl.classList.toggle('hidden', hasResults);
-      const pool = applyListingFilter(allJobs);
-      updateMeta(jobs.length, pool.length);
+      listEl.classList.toggle('hidden', jobs.length === 0);
+      if (emptyEl) emptyEl.classList.toggle('hidden', jobs.length > 0);
+      if (metaEl) metaEl.textContent = `${jobs.length} listings displayed`;
     }
-
-    function applyListingFilter(jobs) {
-      if (activeListingFilter === 'jobs') {
-        return jobs.filter((j) => listingTypeOf(j) === 'Job');
-      }
-      if (activeListingFilter === 'summer') {
-        return jobs.filter((j) => listingTypeOf(j) === 'Summer Program');
-      }
-      return jobs;
-    }
-
-    function filterJobs(query) {
-      const pool = applyListingFilter(allJobs);
-      const q = query.trim().toLowerCase();
-      if (!q) return pool;
-      return pool.filter(
-        (j) =>
-          j.title.toLowerCase().includes(q) ||
-          j.company.toLowerCase().includes(q) ||
-          (j.category || '').toLowerCase().includes(q) ||
-          (j.source || '').toLowerCase().includes(q) ||
-          listingTypeOf(j).toLowerCase().includes(q)
-      );
-    }
-
-    function setActiveTab(filter) {
-      activeListingFilter = filter;
-      listingTabs.querySelectorAll('.listing-tab').forEach((tab) => {
-        const isActive = tab.dataset.filter === filter;
-        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        tab.className = `listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition ${isActive ? TAB_ACTIVE : TAB_INACTIVE}`;
-      });
-    }
-
-    listingTabs.addEventListener('click', (e) => {
-      const tab = e.target.closest('.listing-tab');
-      if (!tab) return;
-      setActiveTab(tab.dataset.filter);
-      onSearchInput();
-    });
-
-    function showSubscribeMessage(text, isSuccess) {
-      subscribeMessage.textContent = text;
-      subscribeMessage.classList.remove('hidden', 'bg-rose-500/15', 'text-rose-200', 'bg-emerald-500/15', 'text-emerald-200');
-      if (isSuccess) {
-        subscribeMessage.classList.add('bg-emerald-500/15', 'text-emerald-200');
-      } else {
-        subscribeMessage.classList.add('bg-rose-500/15', 'text-rose-200');
-      }
-    }
-
-    subscribeForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value.trim();
-      const category = document.getElementById('category').value;
-
-      subscribeBtn.disabled = true;
-      subscribeBtnLabel.textContent = 'Subscribing…';
-      subscribeSpinner.classList.remove('hidden');
-      subscribeMessage.classList.add('hidden');
-
-      try {
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone, category }),
-        });
-        const data = await res.json();
-        if (!res.ok || !data.ok) {
-          throw new Error(data.error || 'Subscription failed');
-        }
-        showSubscribeMessage(data.message, true);
-        if (data.is_new) subscribeForm.reset();
-      } catch (err) {
-        showSubscribeMessage(err.message, false);
-      } finally {
-        subscribeBtn.disabled = false;
-        subscribeBtnLabel.textContent = 'Subscribe to alerts';
-        subscribeSpinner.classList.add('hidden');
-      }
-    });
 
     async function loadJobs() {
-      let res = await fetch('/api/jobs', { cache: 'no-store' });
-      if (res.ok) return res.json();
-      res = await fetch('jobs.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
+      try {
+        let res = await fetch('/api/jobs', { cache: 'no-store' });
+        if (res.ok) return res.json();
+        res = await fetch('jobs.json', { cache: 'no-store' });
+        return res.json();
+      } catch (e) { return { jobs: [] }; }
     }
-
-    function onSearchInput() {
-      const value = searchEl.value;
-      clearBtn.classList.toggle('hidden', !value);
-      renderJobs(filterJobs(value));
-    }
-
-    searchEl.addEventListener('input', onSearchInput);
-    clearBtn.addEventListener('click', () => {
-      searchEl.value = '';
-      onSearchInput();
-      searchEl.focus();
-    });
 
     async function init() {
-      try {
-        const data = await loadJobs();
-        allJobs = Array.isArray(data.jobs) ? data.jobs : [];
-        document.body.dataset.scrapedAt = data.scraped_at || '';
-
-        loadingEl.classList.add('hidden');
-        alertsSection.classList.remove('hidden');
-
-        if (!allJobs.length) {
-          emptyEl.classList.remove('hidden');
-          metaEl.textContent = 'No jobs — run python scraper.py';
-          return;
-        }
-
-        renderJobs(allJobs);
-      } catch (err) {
-        loadingEl.classList.add('hidden');
-        errorEl.classList.remove('hidden');
-        document.getElementById('error-detail').textContent =
-          `${err.message}. Run python server.py (not file://).`;
-        metaEl.textContent = '';
+      const data = await loadJobs();
+      
+      // Emergency structure handler for list format vs object format
+      if (Array.isArray(data)) {
+        allJobs = data;
+      } else if (data && Array.isArray(data.jobs)) {
+        allJobs = data.jobs;
+      } else {
+        allJobs = [];
       }
-    }
 
+      if (loadingEl) loadingEl.classList.add('hidden');
+      if (alertsSection) alertsSection.classList.remove('hidden');
+      renderJobs(allJobs);
+    }
     init();
   </script>
 </body>
