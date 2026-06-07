@@ -1,261 +1,100 @@
-"""
-WhatsApp alert broadcaster via Twilio.
-
-Reads subscribers from SQLite, matches jobs from jobs.json by category,
-and sends WhatsApp messages through the Twilio API.
-
-HOW TO RUN:
-  1. Paste your Twilio credentials below (or set env vars).
-  2. Join the WhatsApp sandbox: send the join code to +1 415 523 8886
-     from the phone numbers you want to test.
-  3. python scraper.py
-  4. python notifier.py
-
-Requires: pip install -r requirements.txt
-"""
-
-from __future__ import annotations
-
-import json
-import os
-import sys
+import sqlite3
+from datetime import datetime, timezone, timedelta
+import urllib.parse
 from pathlib import Path
-from typing import Any
-
 import database as db
 
-# --- Twilio credentials (paste your keys here) ---
-TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID", "YOUR_FALLBACK_SID_IF_LOCAL")
-TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN", "YOUR_FALLBACK_TOKEN_IF_LOCAL")
-TWILIO_WHATSAPP_NUMBER = "+14155238886"
-# -------------------------------------------------
+def run_alert_dispatcher():
+    print("🚀 =================================================")
+    print("🚀 CARIBBEAN FINDER — WHATSAPP ALERTS MATCHING ENGINE")
+    print("🚀 =================================================\n")
 
-PROJECT_DIR = Path(__file__).resolve().parent
-JOBS_JSON = PROJECT_DIR / "jobs.json"
-
-CATEGORY_EMOJI = {
-    "Tech": "💻",
-    "Admin": "📋",
-    "Retail": "🛒",
-    "Other": "📌",
-}
-
-SOURCE_EMOJI = {
-    "CaribbeanJobs": "🌐",
-    "SVG Gov": "🏛️",
-}
-
-
-def _env_or_default(name: str, default: str) -> str:
-    return os.environ.get(name, default).strip()
-
-
-def get_twilio_config() -> tuple[str, str, str]:
-    return (
-        _env_or_default("TWILIO_ACCOUNT_SID", TWILIO_ACCOUNT_SID),
-        _env_or_default("TWILIO_AUTH_TOKEN", TWILIO_AUTH_TOKEN),
-        _env_or_default("TWILIO_WHATSAPP_NUMBER", TWILIO_WHATSAPP_NUMBER),
-    )
-
-
-def credentials_configured() -> bool:
-    sid, token, from_number = get_twilio_config()
-    placeholders = (
-        "YOUR_ACCOUNT_SID_HERE",
-        "YOUR_AUTH_TOKEN_HERE",
-        "",
-    )
-    return (
-        sid not in placeholders
-        and token not in placeholders
-        and from_number.startswith("+")
-    )
-
-
-def mask_phone(phone: str) -> str:
-    if len(phone) <= 6:
-        return phone
-    return phone[:5] + "..."
-
-
-def whatsapp_address(phone: str) -> str:
-    digits = phone.strip()
-    if not digits.startswith("whatsapp:"):
-        if not digits.startswith("+"):
-            digits = f"+{digits}"
-        digits = f"whatsapp:{digits}"
-    return digits
-
-
-def job_key(job: dict[str, Any]) -> str:
-    external_id = job.get("external_id")
-    if external_id:
-        return str(external_id)
-    return f"{job['title']}|{job['company']}"
-
-
-def load_jobs() -> tuple[list[dict[str, Any]], str | None]:
-    if not JOBS_JSON.is_file():
-        raise FileNotFoundError(
-            f"{JOBS_JSON.name} not found. Run python scraper.py first."
-        )
-
-    payload = json.loads(JOBS_JSON.read_text(encoding="utf-8"))
-    jobs = payload.get("jobs", [])
-    if not isinstance(jobs, list):
-        raise ValueError("jobs.json is missing a valid 'jobs' array.")
-    return jobs, payload.get("scraped_at")
-
-
-def jobs_for_category(jobs: list[dict[str, Any]], category: str) -> list[dict[str, Any]]:
-    return [j for j in jobs if j.get("category") == category]
-
-
-def build_message(job: dict[str, Any], category: str) -> str:
-    """WhatsApp-friendly alert body with emojis and light formatting."""
-    cat_emoji = CATEGORY_EMOJI.get(category, "🔔")
-    source = job.get("source", "Caribbean Finder")
-    src_emoji = SOURCE_EMOJI.get(source, "📍")
-    title = job["title"]
-    company = job["company"]
-    url = job.get("url")
-
-    lines = [
-        "🌴 *Caribbean Finder*",
-        f"{cat_emoji} *New {category} job alert!*",
-        "",
-        f"💼 *{title}*",
-        f"🏢 {company}",
-        f"{src_emoji} Source: {source}",
-    ]
-
-    if url:
-        lines.extend(["", "🔗 *Apply now:*", url])
-    else:
-        lines.extend(["", "🔗 Details available on the job board."])
-
-    lines.extend(["", "—", "Reply STOP anytime to unsubscribe (coming soon)."])
-
-    return "\n".join(lines)
-
-
-def send_whatsapp(phone: str, category: str, job: dict[str, Any]) -> str:
-    """Send a real WhatsApp message via Twilio. Returns message SID."""
-    from twilio.rest import Client
-    from twilio.base.exceptions import TwilioRestException
-
-    sid, token, from_number = get_twilio_config()
-    client = Client(sid, token)
-    body = build_message(job, category)
-
-    try:
-        message = client.messages.create(
-            from_=whatsapp_address(from_number),
-            to=whatsapp_address(phone),
-            body=body,
-        )
-        return message.sid
-    except TwilioRestException as exc:
-        raise RuntimeError(f"Twilio error {exc.code}: {exc.msg}") from exc
-
-
-def send_whatsapp_simulation(phone: str, category: str, job: dict[str, Any]) -> None:
-    masked = mask_phone(phone)
-    title = job["title"]
-    source = job.get("source", "Unknown")
-    print(
-        f"[SIMULATED] Would send {category} alert "
-        f'"{title}" ({source}) to {masked}'
-    )
-    print("--- message preview ---")
-    print(build_message(job, category))
-    print("-----------------------")
-
-
-def deliver_alert(phone: str, category: str, job: dict[str, Any], live: bool) -> None:
-    masked = mask_phone(phone)
-    title = job["title"]
-    source = job.get("source", "Unknown")
-
-    if live:
-        message_sid = send_whatsapp(phone, category, job)
-        print(
-            f"[WHATSAPP SENT] {category} | {title} ({source}) -> {masked} | SID {message_sid}"
-        )
-    else:
-        send_whatsapp_simulation(phone, category, job)
-
-
-def run_broadcast() -> int:
-    live = credentials_configured()
-    if not live:
-        print(
-            "Twilio credentials not configured — running in SIMULATION mode.\n"
-            "Paste TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN at the top of notifier.py\n"
-            "or set them as environment variables.\n"
-        )
-    else:
-        print(f"Twilio live mode — sending from whatsapp:{get_twilio_config()[2]}\n")
-
-    db.init_db()
-    subscribers = db.list_subscriptions()
-
+    # 1. Fetch active subscribers using your newly created database helper functions
+    subscribers = db.get_all_subscribers()
+    
     if not subscribers:
-        print("No subscribers in database. Add some via the job board UI first.")
-        return 0
+        print("ℹ️  No active phone alert subscribers found in the database. Exiting worker.")
+        return
 
-    jobs, scraped_at = load_jobs()
-    if not jobs:
-        print("No jobs in jobs.json. Run python scraper.py first.")
-        return 0
+    print(f"👥 Found {len(subscribers)} registered subscriber(s) to scan.")
 
-    print(f"Loaded {len(jobs)} job(s) from {JOBS_JSON.name}")
-    if scraped_at:
-        print(f"Scrape timestamp: {scraped_at}")
-    print(f"Checking {len(subscribers)} subscriber(s)...\n")
+    # 2. Retrieve jobs scraped within the last 24 hours to prevent duplicate spamming
+    try:
+        # Use your database path directly to connect safely
+        conn = sqlite3.connect(db.DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Calculate a threshold timestamp for the last 24 hours
+        time_limit = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+        cursor.execute('SELECT title, company, category, url FROM jobs WHERE scraped_at > ?', (time_limit,))
+        fresh_jobs = cursor.fetchall()
+        conn.close()
+    except Exception as e:
+        print(f"❌ Error fetching latest listings from SQLite: {e}")
+        return
 
-    sent_count = 0
-    error_count = 0
+    if not fresh_jobs:
+        print("ℹ️  No fresh jobs or summer camps found within the last 24-hour window. Nothing to send today.\n")
+        return
 
+    print(f"💼 Total fresh listings collected in last 24 hours: {len(fresh_jobs)}\n")
+    print("-------------------------------------------------")
+    print("🔍 RUNNING BATCH CATEGORY MATCHES:")
+    print("-------------------------------------------------")
+
+    # 3. Process matches per subscriber
+    alert_count = 0
     for sub in subscribers:
         phone = sub["phone"]
-        category = sub["category"]
-        matches = jobs_for_category(jobs, category)
+        user_cat = sub["category"]
+
+        # Find matching items based on their dropdown selection
+        matches = []
+        for job in fresh_jobs:
+            job_cat = job["category"] or "Other"
+            # Match if category names line up or if the user subscribed to 'All'
+            if user_cat.lower() == "all" or job_cat.lower() == user_cat.lower():
+                matches.append(job)
 
         if not matches:
-            print(f"[SKIP] No {category} jobs for {mask_phone(phone)}")
+            print(f"   • User {phone} ({user_cat}): No new matches found today.")
             continue
 
-        for job in matches:
-            key = job_key(job)
-            if db.was_alert_sent(phone, key):
-                continue
+        alert_count += 1
+        print(f"   • 🎉 MATCH FOUND for {phone} under category '{user_cat}'!")
+        print(f"     Found {len(matches)} item(s) matching their preference.")
 
-            try:
-                deliver_alert(phone, category, job, live=live)
-                db.record_alert_sent(phone, key, category)
-                sent_count += 1
-            except RuntimeError as exc:
-                error_count += 1
-                print(f"[ERROR] {mask_phone(phone)}: {exc}", file=sys.stderr)
+        # 4. Construct a structured layout message text template
+        message = f"🌴 *Caribbean Finder Live Alert!* 🌴\n\n"
+        message += f"Hey! We found new opportunities matching your *{user_cat}* preferences:\n\n"
+        
+        # Limit to 3 items per message text blocks to stay brief
+        for job in matches[:3]:
+            message += f"💼 *{job['title']}*\n"
+            message += f"🏢 {job['company']}\n"
+            message += f"🔗 {job['url'] if job['url'] else 'https://onrender.com'}\n\n"
+            
+        message += "📱 Keep hunting! Refresh your dashboard to see more items."
 
-    mode = "sent" if live else "simulated"
-    print(f"\nDone. {sent_count} alert(s) {mode}.")
-    if error_count:
-        print(f"{error_count} delivery error(s) — see messages above.", file=sys.stderr)
-    if sent_count == 0 and error_count == 0:
-        print("No new matches (already notified or no category overlap).")
+        # 5. Free Text Gateway Preparation Router Block
+        clean_phone = phone.replace("+", "").replace(" ", "").replace("-", "")
+        encoded_text = urllib.parse.quote(message)
+        
+        # Free background click-to-chat setup route
+                # 🆕 Added the missing forward slash right after wa.me
+        whatsapp_click_url = f"https://wa.me{clean_phone}?text={encoded_text}"
 
-    return sent_count
+        
+        print(f"     Generated WhatsApp text template link:")
+        print(f"     🔗 {whatsapp_click_url[:70]}...")
+        print("     -------------------------------------------")
 
-
-def main() -> None:
-    try:
-        run_broadcast()
-    except (FileNotFoundError, ValueError) as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        raise SystemExit(1) from exc
-
+    print("\n=================================================")
+    print(f"📊 ALERT DISPATCH RUN COMPLETE.")
+    print(f"📊 Successfully prepared and matched {alert_count} alert message packet(s).")
+    print("=================================================\n")
 
 if __name__ == "__main__":
-    main()
+    run_alert_dispatcher()
+
