@@ -30,6 +30,34 @@ app = Flask(__name__, static_folder=str(PROJECT_DIR), static_url_path="")
 def home():
     return send_from_directory(PROJECT_DIR, "index.html")
 
+@app.route("/api/subscribe", methods=["POST"])
+def api_subscribe():
+    """Receives user subscription requests from index.html and records them in SQLite."""
+    data = request.get_json()
+    if not data:
+        return jsonify({"ok": False, "error": "Missing form data"}), 400
+        
+    phone = data.get("phone", "").strip()
+    category = data.get("category", "").strip()
+    
+    # Validation checks
+    if not phone:
+        return jsonify({"ok": False, "error": "Please enter a valid phone number!"}), 400
+    if not category:
+        return jsonify({"ok": False, "error": "Please select a job category!"}), 400
+        
+    # Send directly to the database.py functions we just wrote
+    success = db.save_subscriber(phone, category)
+    
+    if success:
+        return jsonify({
+            "ok": True,
+            "is_new": True,
+            "message": f"Successfully subscribed {phone} to {category} alerts!"
+        })
+    else:
+        return jsonify({"ok": False, "error": "Database error saving your alerts."}), 500
+
 
 @app.get("/api/jobs")
 def api_jobs():
@@ -56,7 +84,7 @@ def api_jobs():
 
 
 @app.post("/api/subscribe")
-def api_subscribe():
+def api_subscribe_user():
     data = request.get_json(silent=True) or {}
     phone = (data.get("phone") or "").strip()
     category = (data.get("category") or "").strip()

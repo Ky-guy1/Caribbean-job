@@ -63,7 +63,34 @@ def get_connection() -> Iterator[sqlite3.Connection]:
         conn.rollback()
         raise
     finally:
-        conn.close()
+        conn.close()   
+def save_subscriber(phone: str, category: str) -> bool:
+        """Saves a new user subscription into the database using our connection manager."""
+        created_at = utc_now_iso()
+        try:
+            with get_connection() as conn:
+                cursor = conn.cursor()
+                # Inserts phone and category combination. Uses OR IGNORE to safely handle duplicates.
+                cursor.execute('''
+                    INSERT OR IGNORE INTO subscriptions (phone, category, created_at)
+                    VALUES (?, ?, ?)
+                ''', (phone, category, created_at))
+                return True
+        except Exception as e:
+            print(f"Database error saving subscriber: {e}")
+            return False
+def get_all_subscribers() -> list[dict]:
+        """Retrieves all active phone alerts and their matched categories."""
+        try:
+            with get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute('SELECT phone, category FROM subscriptions')
+                rows = cursor.fetchall()
+                return [{"phone": row["phone"], "category": row["category"]} for row in rows]
+        except Exception as e:
+            print(f"Database error reading subscribers: {e}")
+            return []
+
 
 
 def _migrate_schema(conn: sqlite3.Connection) -> None:
