@@ -166,6 +166,17 @@
           >
             Summer Programs
           </button>
+                  <!-- 🎓 Scholarships Filter Tab Pill Button -->
+        <button
+        type="button"
+        role="tab"
+        data-filter="scholarship"
+        aria-selected="false"
+        class="listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition bg-white/[0.04] text-slate-400 ring-1 ring-white/10 hover:bg-white/[0.08] hover:text-slate-200"
+      >
+        Scholarships
+      </button>
+
         </div>
 
         <p id="meta" class="mt-3 text-xs font-medium text-slate-400 dark:text-slate-500">Loading…</p>
@@ -315,14 +326,13 @@
     }
 
     function applyListingFilter(jobs) {
-      if (activeListingFilter === 'jobs') {
-        return jobs.filter((j) => listingTypeOf(j) === 'Job');
-      }
-      if (activeListingFilter === 'summer') {
-        return jobs.filter((j) => listingTypeOf(j) === 'Summer Program');
-      }
+      if (activeListingFilter === 'jobs') return jobs.filter((j) => listingTypeOf(j) === 'Job');
+      if (activeListingFilter === 'summer') return jobs.filter((j) => listingTypeOf(j) === 'Summer Program');
+      // 🎓 Connected: Extracts and isolates your database scholarship listing type rows safely
+      if (activeListingFilter === 'scholarship') return jobs.filter((j) => listingTypeOf(j) === 'Scholarship');
       return jobs;
     }
+
 
     // 5. Core Render Engine
     function renderJobs(jobs) {

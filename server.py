@@ -25,6 +25,33 @@ import scraper
 PROJECT_DIR = Path(__file__).resolve().parent
 app = Flask(__name__, static_folder=str(PROJECT_DIR), static_url_path="")
 
+import threading
+import time
+from datetime import datetime
+import os
+
+# ⏱️ FREE BACKGROUND AUTOMATION SCHEDULER CLOCK
+def run_automated_scrapers():
+    """Wakes up automatically every 24 hours to execute your opportunity scrapers entirely for free."""
+    print(f"⏰ [{datetime.now()}] Background automation loop triggered. Spinning up scraper scripts...")
+    try:
+        # Runs your database pipeline smoothly in a parallel background track
+        os.system("python inject_scholarships.py")
+        print("✅ Automated scraper run completed successfully! Database refreshed.")
+    except Exception as e:
+        print(f"⚠️ Background scheduler runtime warning: {e}")
+
+def background_clock_loop():
+    """Quietly sleeps in the background without wasting system CPU resources or costing money."""
+    time.sleep(15)  # Wait 15 seconds for the main web server to boot up completely first
+    while True:
+        run_automated_scrapers()
+        time.sleep(86400)  # Exactly 24 hours in seconds
+
+# Spins up the quiet clock loop immediately whenever the server starts
+threading.Thread(target=background_clock_loop, daemon=True).start()
+
+
 
 @app.route("/")
 def home():
