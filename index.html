@@ -372,17 +372,20 @@
 
     function setActiveTab(filter) {
       activeListingFilter = filter;
-      const TAB_ACTIVE = 'bg-cyan-500/20 text-cyan-200 ring-1 ring-cyan-500/40';
+      // 🟢 Premium High-Contrast Neon-Green / Deep Matte Charcoal Theme Matrix tokens
+      const TAB_ACTIVE = 'bg-[#CCFF00] text-black ring-1 ring-[#CCFF00]/30 shadow-[0_0_20px_rgba(204,255,0,0.15)]';
       const TAB_INACTIVE = 'bg-white/[0.04] text-slate-400 ring-1 ring-white/10 hover:bg-white/[0.08] hover:text-slate-200';
       
       if (listingTabs) {
         listingTabs.querySelectorAll('button').forEach((tab) => {
           const isActive = tab.dataset.filter === filter;
           tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-          tab.className = `listing-tab rounded-full px-3.5 py-1.5 text-xs font-bold transition ${isActive ? TAB_ACTIVE : TAB_INACTIVE}`;
+          // Applies the clean pill shape and transitions the active green state smoothly to whichever button you tap!
+          tab.className = `listing-tab rounded-full px-4 py-2 text-xs font-bold transition-all duration-150 ${isActive ? TAB_ACTIVE : TAB_INACTIVE}`;
         });
       }
     }
+
 
     // 7. Event Listeners Connection
     if (listingTabs) {
