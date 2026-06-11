@@ -347,7 +347,53 @@
       "source": "NTRC SVG",
       "listing_type": "Summer Program",
       "url": "https://www.ntrc.vc/2025-icode784-competition-robotics-category-zone-2-preliminary-judging/",
-      "scraped_at": "2026-06-06T20:38:46.126586+00:00"
+      "scraped_at": "2026-06-06T20:38:46.126586+00:00",  
+
+      {
+        "external_id": "sch-taiwan-2026",
+        "title": "Taiwan (ROC) International Higher Education Scholarship",
+        "company": "Government of the Republic of China (Taiwan)",
+        "location": "Kingstown, St. Vincent / Taiwan",
+        "category": "Tech",
+        "source": "SVG Ministry of Education",
+        "listing_type": "Scholarship",
+        "url": "https://studyintaiwan.org",
+        "scraped_at": "2026-06-08T12:00:00.000000+00:00"
+      },
+      {
+        "external_id": "sch-chevening-2026",
+        "title": "Chevening UK Government Scholarships (Fully Funded Master's)",
+        "company": "UK Foreign, Commonwealth & Development Office",
+        "location": "Kingstown, St. Vincent / UK",
+        "category": "Admin",
+        "source": "British High Commission Kingstown",
+        "listing_type": "Scholarship",
+        "url": "https://chevening.org",
+        "scraped_at": "2026-06-08T12:00:00.000000+00:00"
+      },
+      {
+        "external_id": "sch-uwi-2026",
+        "title": "UWI Open Merit Scholarships (Undergraduate Programs)",
+        "company": "The University of the West Indies",
+        "location": "Kingstown, St. Vincent",
+        "category": "Other",
+        "source": "UWI Global Campus SVG",
+        "listing_type": "Scholarship",
+        "url": "https://uwi.edu",
+        "scraped_at": "2026-06-08T12:00:00.000000+00:00"
+      },
+      {
+        "external_id": "sch-oas-2026",
+        "title": "OAS Academic Scholarship Program (Graduate Research)",
+        "company": "Organization of American States (OAS)",
+        "location": "Kingstown, St. Vincent",
+        "category": "Admin",
+        "source": "OAS Official Portal",
+        "listing_type": "Scholarship",
+        "url": "https://oas.org",
+        "scraped_at": "2026-06-08T12:00:00.000000+00:00"
+      }
+    
     }
   ]
 }
