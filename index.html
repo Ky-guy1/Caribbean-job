@@ -251,6 +251,59 @@
       <ul id="job-list" class="hidden space-y-3"></ul>
     </main>
   </div>
+    <!-- 📱 PREMIUM SLIDING BOTTOM SHEET DETAILS CONTEXT VIEW (Phone 3 Mockup Style) -->
+    <div id="details-bottom-sheet" class="fixed inset-x-0 bottom-0 z-50 max-w-md mx-auto translate-y-full rounded-t-[32px] border-t border-white/[0.06] bg-[#111115] p-6 shadow-[0_-12px_40px_rgba(0,0,0,0.7)] transition-transform duration-300 ease-out hidden" role="dialog" aria-modal="true">
+      
+      <!-- Top Pill Visual Handle Accent -->
+      <div id="close-sheet-drag" class="mx-auto mb-5 h-1.5 w-12 rounded-full bg-slate-700/60 cursor-pointer hover:bg-slate-500 transition"></div>
+      
+      <!-- Primary Header Metadata Row -->
+      <div class="flex items-start gap-4">
+        <div id="sheet-avatar" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#CCFF00]/10 text-[#CCFF00] text-sm font-extrabold ring-1 ring-white/[0.04]"></div>
+        <div class="min-w-0 flex-1">
+          <span id="sheet-badge" class="inline-block rounded-md px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider bg-white/[0.03] text-slate-400 border border-white/[0.04] mb-1.5"></span>
+          
+          <h2 id="sheet-title" class="text-[17px] font-extrabold leading-snug text-white line-clamp-2"></h2>
+
+          <p id="sheet-company" class="mt-0.5 truncate text-xs font-semibold text-slate-400"></p>
+        </div>
+      </div>
+
+      <!-- 📊 High-Utility Structured Data Parameters Grid -->
+      <div class="mt-6 grid grid-cols-3 gap-2.5">
+        <div class="rounded-2xl border border-white/[0.02] bg-white/[0.01] p-3 text-center">
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Duration</p>
+          <p id="meta-duration" class="mt-1 text-xs font-extrabold text-white">Varies</p>
+        </div>
+        <div class="rounded-2xl border border-white/[0.02] bg-white/[0.01] p-3 text-center">
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Stipend</p>
+          <p id="meta-stipend" class="mt-1 text-xs font-extrabold text-[#CCFF00]">Fully Funded</p>
+        </div>
+        <div class="rounded-2xl border border-white/[0.02] bg-white/[0.01] p-3 text-center">
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500">Work Mode</p>
+          <p id="meta-location" class="mt-1 text-xs font-extrabold text-white">SVG / Int'l</p>
+        </div>
+      </div>
+
+      <!-- Overview Blurb Frame -->
+      <div class="mt-5">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">About this opportunity</p>
+        <p id="sheet-description" class="mt-1.5 text-xs text-slate-400 leading-relaxed">
+          Access complete guidelines, application criteria, and structural eligibility paths for this track. Apply before the upcoming review cycle deadline.
+        </p>
+      </div>
+
+      <!-- Floating Direct Action Quick Apply Button Layout Footer -->
+      <div class="mt-6">
+        <a id="sheet-apply-btn" href="#" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#CCFF00] py-4 text-sm font-black text-black shadow-[0_4px_24px_rgba(204,255,0,0.2)] transition active:scale-[0.98]">
+          <span>Proceed to Application</span>
+          <svg class="h-4 w-4 stroke-" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Backdrop dim overlay element blurring the background stream components -->
+    <div id="sheet-backdrop" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden transition-opacity duration-300 opacity-0"></div>
 
   <template id="job-card-template">
     <li>
@@ -288,6 +341,14 @@
     const themeToggleBtn = document.getElementById('theme-toggle');
     const darkIcon = document.getElementById('theme-toggle-dark-icon');
     const lightIcon = document.getElementById('theme-toggle-light-icon');
+    const sheetEl = document.getElementById('details-bottom-sheet');
+    const backdropEl = document.getElementById('sheet-backdrop');
+    const closeSheetBtn = document.getElementById('close-sheet-drag');
+    const sheetTitle = document.getElementById('sheet-title');
+    const sheetCompany = document.getElementById('sheet-company');
+    const sheetAvatar = document.getElementById('sheet-avatar');
+    const sheetBadge = document.getElementById('sheet-badge');
+    const sheetApplyBtn = document.getElementById('sheet-apply-btn');
 
     // 2. Global State Tracking
     let allJobs = [];
@@ -347,7 +408,15 @@
         node.querySelector('.job-avatar').textContent = companyInitials(job.company);
         
         const a = node.querySelector('.job-card');
-        if (a) a.href = job.url || '#';
+        if (a) {
+          // Prevents the browser from instantly changing pages
+          a.href = '#';
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            openDetailsSheet(job);
+          });
+        }
+
         
         fragment.appendChild(node);
       });
@@ -418,6 +487,53 @@
         }
       });
     }
+    // 🎭 Open the Sliding Bottom Sheet Panel View
+    function openDetailsSheet(job) {
+      if (!sheetEl || !backdropEl) return;
+      
+      // Inject database payload info into the sheet layout fields
+      sheetTitle.textContent = job.title;
+      sheetCompany.textContent = job.company;
+      sheetAvatar.textContent = companyInitials(job.company);
+      sheetBadge.textContent = listingTypeOf(job);
+      sheetApplyBtn.href = job.url || '#';
+      
+      sheetEl.classList.remove('hidden');
+
+      
+      // Inject database payload information into the sheet template layout
+      sheetTitle.textContent = job.title;
+      sheetCompany.textContent = job.company;
+      sheetAvatar.textContent = companyInitials(job.company);
+      sheetBadge.textContent = listingTypeOf(job);
+      sheetApplyBtn.href = job.url || '#';
+      
+      // Reveal container framework blocks
+      sheetEl.classList.remove('hidden');
+      backdropEl.classList.remove('hidden');
+      
+      // Small tick delay to trigger fluid hardware-accelerated CSS animations
+      setTimeout(() => {
+        sheetEl.classList.remove('translate-y-full');
+        backdropEl.classList.remove('opacity-0');
+        backdropEl.classList.add('opacity-100');
+      }, 20);
+    }
+
+    // 🎭 Hide and Slide the Bottom Sheet Back Down Off-Screen
+    function closeDetailsSheet() {
+      if (!sheetEl || !backdropEl) return;
+      
+      sheetEl.classList.add('translate-y-full');
+      backdropEl.classList.remove('opacity-100');
+      backdropEl.classList.add('opacity-0');
+      
+      // Wait for the 300ms layout slide duration to finish before masking the elements entirely
+      setTimeout(() => {
+        sheetEl.classList.add('hidden');
+        backdropEl.classList.add('hidden');
+      }, 300);
+    }
 
     // 8. Initialization Data Loader
     async function loadJobs() {
@@ -430,6 +546,56 @@
         return { jobs: [] }; 
       }
     }
+    // 📱 Swipe & Drag-to-Dismiss Touch Gestures Controller
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    if (sheetEl) {
+      const onDragStart = (e) => {
+        startY = e.touches ? e.touches[0].clientY : e.clientY;
+        isDragging = true;
+        sheetEl.style.transition = 'none';
+      };
+
+      const onDragMove = (e) => {
+        if (!isDragging) return;
+        currentY = e.touches ? e.touches[0].clientY : e.clientY;
+        const deltaY = currentY - startY;
+        
+        if (deltaY > 0) {
+          sheetEl.style.transform = `translateY(${deltaY}px)`;
+        }
+      };
+
+      const onDragEnd = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        sheetEl.style.transition = 'transform 0.3s ease-out';
+        
+        const deltaY = currentY - startY;
+        if (deltaY > 100) {
+          closeDetailsSheet();
+        } else {
+          sheetEl.style.transform = 'translateY(0)';
+        }
+        startY = 0;
+        currentY = 0;
+      };
+
+      sheetEl.addEventListener('touchstart', onDragStart, { passive: true });
+      sheetEl.addEventListener('touchmove', onDragMove, { passive: true });
+      sheetEl.addEventListener('touchend', onDragEnd);
+
+      if (closeSheetBtn) {
+        closeSheetBtn.addEventListener('mousedown', onDragStart);
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', onDragEnd);
+        closeSheetBtn.addEventListener('click', closeDetailsSheet);
+      }
+    }
+    
+    if (backdropEl) backdropEl.addEventListener('click', closeDetailsSheet);
 
     async function init() {
       const data = await loadJobs();
